@@ -1,13 +1,8 @@
 /* GLM Studio @ copyright 2018 */
 
-#include <iostream>
-#include "vld.h"
+#include "stdafx.h"
+#include "Crowd.h"
 
-//Using SDL and standard IO
-#include <SDL.h>
-#include <stdio.h>
-
-//Screen dimension constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
@@ -36,6 +31,8 @@ int main( int argc, char* args[] )
 		}
 	}
 
+	CrowdManager::GetInstance()->Add( Vector2( 2.0f, 2.0f ), Vector2( 0.0f, 1.0f ), 2.0f );
+
 	bool quit = false;
 	SDL_Event e;
 
@@ -55,21 +52,9 @@ int main( int argc, char* args[] )
 
 			if ( e.type == SDL_KEYDOWN || e.type == SDL_KEYUP )
 			{
-				if ( keyboardState[ SDL_SCANCODE_UP ] )
+				if ( keyboardState[ SDL_SCANCODE_ESCAPE ] )
 				{
-					--y;
-				}
-				if ( keyboardState[ SDL_SCANCODE_DOWN ] )
-				{
-					++y;
-				}
-				if ( keyboardState[ SDL_SCANCODE_RIGHT ] )
-				{
-					++x;
-				}
-				if ( keyboardState[ SDL_SCANCODE_LEFT ] )
-				{
-					--x;
+					quit = true;
 				}
 			}
 		}
@@ -77,9 +62,8 @@ int main( int argc, char* args[] )
 		SDL_SetRenderDrawColor( renderer, 0xAA, 0xAA, 0xAA, 0xFF );
 		SDL_RenderClear( renderer );
 
-		SDL_Rect fillRect = { SCREEN_WIDTH / 4 + int(x), SCREEN_HEIGHT / 4 + int(y), 10, 10 };
-		SDL_SetRenderDrawColor( renderer, 0xAA, 0x12, 0x34, 0xFF );
-		SDL_RenderFillRect( renderer, &fillRect );
+		CrowdManager::GetInstance()->Update( 0.033f );
+		CrowdManager::GetInstance()->Render( renderer );
 
 		SDL_RenderPresent( renderer );
 	}
