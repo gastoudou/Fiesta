@@ -41,7 +41,7 @@ private:
 class Move : public State
 {
 public:
-	explicit Move( BaseObject* _parent );
+	Move( BaseObject* _parent, float _speed );
 
 	virtual void Enter();
 	virtual void Update( const float _dt );
@@ -55,4 +55,34 @@ private:
 	Move& operator=( const Move& ) = delete;
 
 	float		speed = 0.0f;
+};
+
+class Idle : public State
+{
+public:
+	Idle( BaseObject* _parent );
+
+	virtual void Enter();
+	virtual void Update( const float _dt );
+	virtual void Exit();
+
+private:
+	Idle() = delete;
+	Idle( const Idle& ) = delete;
+	Idle& operator=( const Idle& ) = delete;
+};
+
+class OrderDrink : public State
+{
+public:
+	OrderDrink( BaseObject* _parent );
+
+	virtual void Enter();
+	virtual void Update( const float _dt );
+	virtual void Exit();
+
+private:
+	OrderDrink() = delete;
+	OrderDrink( const OrderDrink& ) = delete;
+	OrderDrink& operator=( const OrderDrink& ) = delete;
 };

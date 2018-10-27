@@ -49,10 +49,27 @@ public:
 		return *this;
 	}
 
-	Vector2& operator+( const Vector2& _other )
+	const Vector2 operator+( const Vector2& _other ) const
+	{
+		return Vector2( this->x + _other.x, this->y + _other.y );
+	}
+
+	Vector2& operator+=( const Vector2& _other )
 	{
 		x += _other.x;
 		y += _other.y;
+		return *this;
+	}
+
+	const Vector2 operator-( const Vector2& _other ) const
+	{
+		return Vector2( this->x - _other.x, this->y - _other.y );
+	}
+
+	Vector2& operator-=( const Vector2& _other )
+	{
+		x -= _other.x;
+		y -= _other.y;
 		return *this;
 	}
 
@@ -73,10 +90,11 @@ public:
 
 	void Normalize()
 	{
-		if ( Len() > 0.0001f )
+		if ( LenSquared() > 0.00001f )
 		{
-			x /= Len();
-			y /= Len();
+			const float len = Len();
+			x /= len;
+			y /= len;
 		}
 	}
 };
