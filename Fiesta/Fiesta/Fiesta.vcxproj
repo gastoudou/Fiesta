@@ -123,8 +123,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Action.cpp" />
+    <ClCompile Include="ActionsManager.cpp" />
     <ClCompile Include="Crowd.cpp" />
+    <ClCompile Include="CrowdManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MoneyManager.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateCrowd.cpp" />
     <ClCompile Include="StateMachine.cpp" />
@@ -133,7 +137,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Action.h" />
+    <ClInclude Include="ActionsManager.h" />
+    <ClInclude Include="BaseObject.h" />
     <ClInclude Include="Crowd.h" />
+    <ClInclude Include="CrowdManager.h" />
+    <ClInclude Include="MoneyManager.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateCrowd.h" />
     <ClInclude Include="StateMachine.h" />

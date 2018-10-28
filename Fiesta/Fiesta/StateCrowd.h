@@ -25,10 +25,10 @@ class Move : public StateCrowd
 public:
 	Move( Crowd* _parent, float _speed );
 
-	virtual void Enter();
-	virtual void Update( const float _dt );
-	virtual void Render( SDL_Renderer* _renderer, TTF_Font* _font );
-	virtual void Exit();
+	virtual void Enter() override;
+	virtual void Update( const float _dt ) override;
+	virtual void Render( SDL_Renderer* _renderer, TTF_Font* _font ) override;
+	virtual void Exit() override;
 
 	void Speed( float _speed );
 
@@ -45,10 +45,10 @@ class Idle : public StateCrowd
 public:
 	Idle( Crowd* _parent );
 
-	virtual void Enter();
-	virtual void Update( const float _dt );
-	virtual void Render( SDL_Renderer* _renderer, TTF_Font* _font );
-	virtual void Exit();
+	virtual void Enter() override;
+	virtual void Update( const float _dt ) override;
+	virtual void Render( SDL_Renderer* _renderer, TTF_Font* _font ) override;
+	virtual void Exit() override;
 
 private:
 	Idle() = delete;
@@ -63,10 +63,10 @@ class PlaceOrder : public StateCrowd
 public:
 	PlaceOrder( Crowd* _parent );
 
-	virtual void Enter();
-	virtual void Update( const float _dt );
-	virtual void Render( SDL_Renderer* _renderer, TTF_Font* _font );
-	virtual void Exit();
+	virtual void Enter() override;
+	virtual void Update( const float _dt ) override;
+	virtual void Render( SDL_Renderer* _renderer, TTF_Font* _font ) override;
+	virtual void Exit() override;
 
 private:
 	PlaceOrder() = delete;
@@ -81,13 +81,29 @@ class WaitOrder : public StateCrowd
 public:
 	WaitOrder( Crowd* _parent );
 
-	virtual void Enter();
-	virtual void Update( const float _dt );
-	virtual void Render( SDL_Renderer* _renderer, TTF_Font* _font );
-	virtual void Exit();
+	virtual void Enter() override;
+	virtual void Update( const float _dt ) override;
+	virtual void Render( SDL_Renderer* _renderer, TTF_Font* _font ) override;
+	virtual void Exit() override;
 
 private:
 	WaitOrder() = delete;
 	WaitOrder( const WaitOrder& ) = delete;
 	WaitOrder& operator=( const WaitOrder& ) = delete;
+};
+
+class WaitForYourTurn : public StateCrowd
+{
+public:
+	WaitForYourTurn( Crowd* _parent );
+
+	virtual void Enter() override;
+	virtual void Update( const float _dt ) override;
+	virtual void Render( SDL_Renderer* _renderer, TTF_Font* _font ) override;
+	virtual void Exit() override;
+
+private:
+	WaitForYourTurn() = delete;
+	WaitForYourTurn( const WaitForYourTurn& ) = delete;
+	WaitForYourTurn& operator=( const WaitForYourTurn& ) = delete;
 };

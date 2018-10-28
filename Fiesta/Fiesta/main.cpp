@@ -1,12 +1,12 @@
 /* GLM Studio @ copyright 2018 */
 
 #include "stdafx.h"
-#include "Crowd.h"
+#include "CrowdManager.h"
+#include "ActionsManager.h"
+#include "MoneyManager.h"
 
 const int SCREEN_WIDTH = 540;
 const int SCREEN_HEIGHT = 960;
-
-const Vector2 seats[ 3 ] = { Vector2( 0.0f, 500.0f ), Vector2( 180.0f, 500.0f ), Vector2( 360.0f, 500.0f ) };
 
 void RenderStatic( SDL_Renderer* );
 void DrawPause( SDL_Renderer* _renderer, TTF_Font* _font );
@@ -14,7 +14,7 @@ void DrawTitle( SDL_Renderer* _renderer, TTF_Font* _font );
 
 int main( int argc, char* args[] )
 {
-	//srand( static_cast< unsigned int >( time( NULL ) ) );
+	srand( static_cast< unsigned int >( time( NULL ) ) );
 
 	SDL_Window* window = NULL;
 	SDL_Renderer* renderer = NULL;
@@ -55,8 +55,18 @@ int main( int argc, char* args[] )
 
 	float x = 0.0f;
 	float y = 0.0f;
-	float deltaTime = 0.033f;
+	float deltaTime = 0.33f;
 	bool pause = false;
+
+	// add options
+	ActionsManager::GetInstance()->AddSelect( Vector2( 0.0f, 870.0f ), Vector2( 135.0f, 90.0f ), "option1" );
+	ActionsManager::GetInstance()->AddSelect( Vector2( 135.0f, 870.0f ), Vector2( 135.0f, 90.0f ), "option2" );
+	ActionsManager::GetInstance()->AddSelect( Vector2( 270.0f, 870.0f ), Vector2( 135.0f, 90.0f ), "option3" );
+	ActionsManager::GetInstance()->AddSelect( Vector2( 405.0f, 870.0f ), Vector2( 135.0f, 90.0f ), "option4" );
+
+	ActionsManager::GetInstance()->AddServe( Vector2( 0.0f, 640.0f ), Vector2( 180.0f, 90.0f ), "bar1", 0 );
+	ActionsManager::GetInstance()->AddServe( Vector2( 180.0f, 640.0f ), Vector2( 180.0f, 90.0f ), "bar2", 1 );
+	ActionsManager::GetInstance()->AddServe( Vector2( 360.0f, 640.0f ), Vector2( 180.0f, 90.0f ), "bar3", 2 );
 
 	while ( !quit )
 	{
@@ -81,19 +91,22 @@ int main( int argc, char* args[] )
 					if ( pause )
 						deltaTime = 0.0f;
 					else
-						deltaTime = 0.066f;
+						deltaTime = 0.33f;
 				}
 			}
-
-			CrowdManager::GetInstance()->HandleEvents( e );
+			ActionsManager::GetInstance()->HandleEvents( e );
 		}
 
-		SDL_SetRenderDrawColor( renderer, 0xAA, 0xAA, 0xAA, 0xFF );
+		SDL_SetRenderDrawColor( renderer, 0xBB, 0xBB, 0xBB, 0xFF );
 		SDL_RenderClear( renderer );
 
+		ActionsManager::GetInstance()->Update( deltaTime );
 		CrowdManager::GetInstance()->Update( deltaTime );
+
+		ActionsManager::GetInstance()->Render( renderer, small_font );
 		CrowdManager::GetInstance()->Render( renderer, small_font );
 
+		MoneyManager::GetInstance()->Render( renderer, small_font );
 		RenderStatic( renderer );
 
 		if ( pause )
@@ -108,7 +121,7 @@ int main( int argc, char* args[] )
 		SDL_RenderPresent( renderer );
 	}
 
-	TTF_CloseFont( font );	
+	TTF_CloseFont( font );
 	TTF_Quit();
 
 	SDL_DestroyWindow( window );
@@ -129,62 +142,11 @@ void RenderStatic( SDL_Renderer* _renderer )
 		SDL_SetRenderDrawColor( _renderer, 0x00, 0x00, 0x00, 0xFF );
 		SDL_RenderDrawRect( _renderer, &outlineRect );
 	}
-
-	// seats
-	/*SDL_Rect seat1 = { ( int )seats[ 0 ].x, ( int )seats[ 0 ].y, 180, 90 };
-	SDL_SetRenderDrawColor( _renderer, 0x00, 0x00, 0x00, 0xFF );
-	SDL_RenderDrawRect( _renderer, &seat1 );
-
-	SDL_Rect seat2 = { ( int )seats[ 1 ].x, ( int )seats[ 1 ].y, 180, 90 };
-	SDL_SetRenderDrawColor( _renderer, 0x00, 0x00, 0x00, 0xFF );
-	SDL_RenderDrawRect( _renderer, &seat2 );
-
-	SDL_Rect seat3 = { ( int )seats[ 2 ].x, ( int )seats[ 2 ].y, 180, 90 };
-	SDL_SetRenderDrawColor( _renderer, 0x00, 0x00, 0x00, 0xFF );
-	SDL_RenderDrawRect( _renderer, &seat3 );*/
-
-	// options
-	{
-		SDL_Rect option1 = { 0, 870, 135, 90 };
-		SDL_SetRenderDrawColor( _renderer, 0xFF, 0x00, 0x00, 0xFF );
-		SDL_RenderFillRect( _renderer, &option1 );
-
-		SDL_Rect option1out = { 0, 870, 135, 90 };
-		SDL_SetRenderDrawColor( _renderer, 0x00, 0x00, 0x00, 0xFF );
-		SDL_RenderDrawRect( _renderer, &option1out );
-
-
-		SDL_Rect option2 = { 135, 870, 135, 90 };
-		SDL_SetRenderDrawColor( _renderer, 0x00, 0xFF, 0x00, 0xFF );
-		SDL_RenderFillRect( _renderer, &option2 );
-
-		SDL_Rect option2out = { 135, 870, 135, 90 };
-		SDL_SetRenderDrawColor( _renderer, 0x00, 0x00, 0x00, 0xFF );
-		SDL_RenderDrawRect( _renderer, &option2out );
-
-
-		SDL_Rect option3 = { 270, 870, 135, 90 };
-		SDL_SetRenderDrawColor( _renderer, 0x00, 0x00, 0xFF, 0xFF );
-		SDL_RenderFillRect( _renderer, &option3 );
-
-		SDL_Rect option3out = { 270, 870, 135, 90 };
-		SDL_SetRenderDrawColor( _renderer, 0x00, 0x00, 0x00, 0xFF );
-		SDL_RenderDrawRect( _renderer, &option3out );
-
-
-		SDL_Rect option4 = { 405, 870, 135, 90 };
-		SDL_SetRenderDrawColor( _renderer, 0xFF, 0x00, 0xFF, 0xFF );
-		SDL_RenderFillRect( _renderer, &option4 );
-
-		SDL_Rect option4out = { 405, 870, 135, 90 };
-		SDL_SetRenderDrawColor( _renderer, 0x00, 0x00, 0x00, 0xFF );
-		SDL_RenderDrawRect( _renderer, &option4out );
-	}
 }
 
 void DrawTitle( SDL_Renderer* _renderer, TTF_Font* _font )
 {
-	SDL_Color color = { 0, 0, 0 };
+	SDL_Color color = { 255, 0, 0 };
 	SDL_Surface * surface = TTF_RenderText_Solid( _font, "Fiesta Baiona", color );
 	SDL_Texture * texture = SDL_CreateTextureFromSurface( _renderer, surface );
 	int texW = 0;

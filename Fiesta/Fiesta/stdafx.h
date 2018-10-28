@@ -10,6 +10,8 @@
 
 #include <stdio.h>
 #include <vector>
+#include <string>
+#include <queue>
 #include "Vector.h"
 
 #include <time.h>

@@ -4,6 +4,8 @@
 #include "StateCrowd.h"
 
 #include "Crowd.h"
+#include "CrowdManager.h"
+#include "ActionsManager.h"
 
 StateCrowd::StateCrowd( Crowd* _parent )
 	: parent( _parent )
@@ -20,7 +22,9 @@ Move::Move( Crowd* _parent, float _speed )
 
 void Move::Enter()
 {
-
+	Vector2 newDirection = parent->target - parent->position;
+	newDirection.Normalize();
+	parent->direction = newDirection;
 }
 
 void Move::Update( const float _dt )
@@ -31,9 +35,9 @@ void Move::Update( const float _dt )
 	parent->position = save_position + save_direction * speed * _dt;
 
 	Vector2 between = parent->target - parent->position;
-	if ( between.LenSquared() < 2.0f )
+	if ( between.LenSquared() < 1.0f )
 	{
-		parent->ChangeState( new PlaceOrder( parent ) );
+		parent->ChangeState( CrowdManager::GetInstance()->IAmArrived( parent ) );
 	}
 }
 
@@ -69,7 +73,7 @@ Idle::Idle( Crowd* _parent )
 
 void Idle::Enter()
 {
-	timer = 50.0f;
+	timer = 0.0f;
 }
 
 void Idle::Update( const float _dt )
@@ -109,6 +113,12 @@ PlaceOrder::PlaceOrder( Crowd* _parent )
 void PlaceOrder::Enter()
 {
 	timer = 50.0f;
+
+	size_t orderSize = 1 + rand() % 2;
+	for ( size_t i = 0; i < orderSize; ++i )
+	{
+		parent->order.push_back( ActionsManager::GetInstance()->GetActionSelectedName( rand() % ActionsManager::GetInstance()->GetNbActionsSelected() ) );
+	}
 }
 
 void PlaceOrder::Update( const float _dt )
@@ -122,18 +132,33 @@ void PlaceOrder::Update( const float _dt )
 
 void PlaceOrder::Render( SDL_Renderer* _renderer, TTF_Font* _font )
 {
-	SDL_Color color = { 255, 0, 0 };
-	SDL_Surface * surface = TTF_RenderText_Solid( _font, "State: PLACE ORDER", color );
-	SDL_Texture * texture = SDL_CreateTextureFromSurface( _renderer, surface );
-	int texW = 0;
-	int texH = 0;
-	SDL_QueryTexture( texture, NULL, NULL, &texW, &texH );
-	SDL_Rect dstrect = { ( int )parent->position.x + 10, ( int )parent->position.y + 10, texW, texH };
-	SDL_RenderCopy( _renderer, texture, NULL, &dstrect );
-	SDL_DestroyTexture( texture );
-	SDL_FreeSurface( surface );
-}
+	{
+		SDL_Color color = { 255, 0, 0 };
+		SDL_Surface * surface = TTF_RenderText_Solid( _font, "State: PLACE ORDER", color );
+		SDL_Texture * texture = SDL_CreateTextureFromSurface( _renderer, surface );
+		int texW = 0;
+		int texH = 0;
+		SDL_QueryTexture( texture, NULL, NULL, &texW, &texH );
+		SDL_Rect dstrect = { ( int )parent->position.x + 10, ( int )parent->position.y + 10, texW, texH };
+		SDL_RenderCopy( _renderer, texture, NULL, &dstrect );
+		SDL_DestroyTexture( texture );
+		SDL_FreeSurface( surface );
+	}
 
+	for( size_t i = 0; i < parent->GetOrder().size(); ++i )
+	{
+		SDL_Color color = { 0, 0, 0 };
+		SDL_Surface * surface = TTF_RenderText_Solid( _font, parent->GetOrder()[ i ].c_str(), color );
+		SDL_Texture * texture = SDL_CreateTextureFromSurface( _renderer, surface );
+		int texW = 0;
+		int texH = 0;
+		SDL_QueryTexture( texture, NULL, NULL, &texW, &texH );
+		SDL_Rect dstrect = { ( int )parent->position.x + 10, ( int )parent->position.y + 20 + 10 * ( int )i, texW, texH };
+		SDL_RenderCopy( _renderer, texture, NULL, &dstrect );
+		SDL_DestroyTexture( texture );
+		SDL_FreeSurface( surface );
+	}
+}
 void PlaceOrder::Exit()
 {
 
@@ -147,12 +172,12 @@ WaitOrder::WaitOrder( Crowd* _parent )
 
 void WaitOrder::Enter()
 {
-
+	parent->isWaiting = true;
 }
 
 void WaitOrder::Update( const float _dt )
 {
-	if ( parent->IsClicked() )
+	if ( parent->IsServed() )
 	{
 		parent->ChangeState( new Idle( parent ) );
 	}
@@ -160,8 +185,60 @@ void WaitOrder::Update( const float _dt )
 
 void WaitOrder::Render( SDL_Renderer* _renderer, TTF_Font* _font )
 {
+	{
+		SDL_Color color = { 255, 0, 0 };
+		SDL_Surface * surface = TTF_RenderText_Solid( _font, "State: WAIT ORDER", color );
+		SDL_Texture * texture = SDL_CreateTextureFromSurface( _renderer, surface );
+		int texW = 0;
+		int texH = 0;
+		SDL_QueryTexture( texture, NULL, NULL, &texW, &texH );
+		SDL_Rect dstrect = { ( int )parent->position.x + 10, ( int )parent->position.y + 10, texW, texH };
+		SDL_RenderCopy( _renderer, texture, NULL, &dstrect );
+		SDL_DestroyTexture( texture );
+		SDL_FreeSurface( surface );
+	}
+
+	for ( size_t i = 0; i < parent->GetOrder().size(); ++i )
+	{
+		SDL_Color color = { 0, 0, 0 };
+		SDL_Surface * surface = TTF_RenderText_Solid( _font, parent->GetOrder()[ i ].c_str(), color );
+		SDL_Texture * texture = SDL_CreateTextureFromSurface( _renderer, surface );
+		int texW = 0;
+		int texH = 0;
+		SDL_QueryTexture( texture, NULL, NULL, &texW, &texH );
+		SDL_Rect dstrect = { ( int )parent->position.x + 10, ( int )parent->position.y + 20 + 10 * ( int )i, texW, texH };
+		SDL_RenderCopy( _renderer, texture, NULL, &dstrect );
+		SDL_DestroyTexture( texture );
+		SDL_FreeSurface( surface );
+	}
+
+}
+
+void WaitOrder::Exit()
+{
+	parent->isWaiting = false;
+}
+
+WaitForYourTurn::WaitForYourTurn( Crowd* _parent )
+	: StateCrowd( _parent )
+{
+
+}
+
+void WaitForYourTurn::Enter()
+{
+
+}
+
+void WaitForYourTurn::Update( const float _dt )
+{
+	parent->RefreshTarget();
+}
+
+void WaitForYourTurn::Render( SDL_Renderer* _renderer, TTF_Font* _font )
+{
 	SDL_Color color = { 255, 0, 0 };
-	SDL_Surface * surface = TTF_RenderText_Solid( _font, "State: WAIT ORDER", color );
+	SDL_Surface * surface = TTF_RenderText_Solid( _font, "State: WAIT FOR MY TURN...", color );
 	SDL_Texture * texture = SDL_CreateTextureFromSurface( _renderer, surface );
 	int texW = 0;
 	int texH = 0;
@@ -172,7 +249,7 @@ void WaitOrder::Render( SDL_Renderer* _renderer, TTF_Font* _font )
 	SDL_FreeSurface( surface );
 }
 
-void WaitOrder::Exit()
+void WaitForYourTurn::Exit()
 {
 
 }
