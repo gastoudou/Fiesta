@@ -48,6 +48,7 @@ int main( int argc, char* args[] )
 	}
 
 	TTF_Font * font = TTF_OpenFont( "calibrib.ttf", 20 );
+	TTF_Font * small_font = TTF_OpenFont( "calibrib.ttf", 12 );
 
 	bool quit = false;
 	SDL_Event e;
@@ -80,16 +81,18 @@ int main( int argc, char* args[] )
 					if ( pause )
 						deltaTime = 0.0f;
 					else
-						deltaTime = 0.033f;
+						deltaTime = 0.066f;
 				}
 			}
+
+			CrowdManager::GetInstance()->HandleEvents( e );
 		}
 
 		SDL_SetRenderDrawColor( renderer, 0xAA, 0xAA, 0xAA, 0xFF );
 		SDL_RenderClear( renderer );
 
 		CrowdManager::GetInstance()->Update( deltaTime );
-		CrowdManager::GetInstance()->Render( renderer );
+		CrowdManager::GetInstance()->Render( renderer, small_font );
 
 		RenderStatic( renderer );
 

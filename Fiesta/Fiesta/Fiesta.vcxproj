@@ -125,6 +125,8 @@
   <ItemGroup>
     <ClCompile Include="Crowd.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="State.cpp" />
+    <ClCompile Include="StateCrowd.cpp" />
     <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -132,6 +134,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Crowd.h" />
+    <ClInclude Include="State.h" />
+    <ClInclude Include="StateCrowd.h" />
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Vector.h" />
