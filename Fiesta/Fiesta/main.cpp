@@ -5,12 +5,17 @@
 #include "ActionsManager.h"
 #include "MoneyManager.h"
 
+#pragma optimize( "", off )
+
 const int SCREEN_WIDTH = 540;
 const int SCREEN_HEIGHT = 960;
 
 void RenderStatic( SDL_Renderer* );
 void DrawPause( SDL_Renderer* _renderer, TTF_Font* _font );
 void DrawTitle( SDL_Renderer* _renderer, TTF_Font* _font );
+SDL_Texture* loadTexture( SDL_Renderer* _renderer, std::string path );
+
+const float FIXED_TIME_STAMP = 0.066f;
 
 int main( int argc, char* args[] )
 {
@@ -33,7 +38,7 @@ int main( int argc, char* args[] )
 		}
 		else
 		{
-			window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+			window = SDL_CreateWindow( "Fiesta Baiona", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
 			if ( window == NULL )
 			{
 				std::cout << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
@@ -43,6 +48,14 @@ int main( int argc, char* args[] )
 			{
 				renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
 				SDL_SetRenderDrawColor( renderer, 0xFF, 0xFF, 0xFF, 0xFF );
+
+				//Initialize PNG loading
+				int imgFlags = IMG_INIT_JPG;
+				if( !( IMG_Init( imgFlags ) & imgFlags ) )
+				{
+					std::cout << "SDL_image could not initialize! SDL_image Error: " << IMG_GetError() << std::endl;
+					return -1;
+				}
 			}
 		}
 	}
@@ -55,7 +68,7 @@ int main( int argc, char* args[] )
 
 	float x = 0.0f;
 	float y = 0.0f;
-	float deltaTime = 0.33f;
+	float deltaTime = FIXED_TIME_STAMP;
 	bool pause = false;
 
 	// add options
@@ -67,6 +80,10 @@ int main( int argc, char* args[] )
 	ActionsManager::GetInstance()->AddServe( Vector2( 0.0f, 640.0f ), Vector2( 180.0f, 90.0f ), "bar1", 0 );
 	ActionsManager::GetInstance()->AddServe( Vector2( 180.0f, 640.0f ), Vector2( 180.0f, 90.0f ), "bar2", 1 );
 	ActionsManager::GetInstance()->AddServe( Vector2( 360.0f, 640.0f ), Vector2( 180.0f, 90.0f ), "bar3", 2 );
+
+
+	// TEMP
+	SDL_Texture* gTexture = loadTexture( renderer, "affiche.jpg" );
 
 	while ( !quit )
 	{
@@ -91,7 +108,7 @@ int main( int argc, char* args[] )
 					if ( pause )
 						deltaTime = 0.0f;
 					else
-						deltaTime = 0.33f;
+						deltaTime = FIXED_TIME_STAMP;
 				}
 			}
 			ActionsManager::GetInstance()->HandleEvents( e );
@@ -111,6 +128,7 @@ int main( int argc, char* args[] )
 
 		if ( pause )
 		{
+			SDL_RenderCopy( renderer, gTexture, NULL, NULL );
 			DrawPause( renderer, font );
 		}
 		else
@@ -121,8 +139,13 @@ int main( int argc, char* args[] )
 		SDL_RenderPresent( renderer );
 	}
 
+	SDL_DestroyTexture( gTexture );
+	gTexture = NULL;
+
 	TTF_CloseFont( font );
 	TTF_Quit();
+
+	IMG_Quit();
 
 	SDL_DestroyWindow( window );
 	SDL_Quit();
@@ -160,7 +183,7 @@ void DrawTitle( SDL_Renderer* _renderer, TTF_Font* _font )
 
 void DrawPause( SDL_Renderer* _renderer, TTF_Font* _font )
 {
-	SDL_Rect fillRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+	SDL_Rect fillRect = { 0, SCREEN_HEIGHT / 2 - 10, SCREEN_WIDTH, 20 };
 	SDL_SetRenderDrawColor( _renderer, 0xFF, 0xFF, 0xFF, 0xFF );
 	SDL_RenderFillRect( _renderer, &fillRect );
 
@@ -175,3 +198,30 @@ void DrawPause( SDL_Renderer* _renderer, TTF_Font* _font )
 	SDL_DestroyTexture( texturePause );
 	SDL_FreeSurface( surfacePause );
 }
+
+SDL_Texture* loadTexture( SDL_Renderer* _renderer, std::string path )
+{
+	//The final texture
+	SDL_Texture* newTexture = NULL;
+	//Load image at specified path
+	SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
+	
+	if( loadedSurface == NULL )
+	{
+		printf( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
+	}
+	else
+	{
+		//Create texture from surface pixels
+		newTexture = SDL_CreateTextureFromSurface( _renderer, loadedSurface );
+		if( newTexture == NULL )
+		{
+			printf( "Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
+		}
+		//Get rid of old loaded surface
+		SDL_FreeSurface( loadedSurface );
+	}
+	return newTexture;
+}
+
+#pragma optimize( "", on )

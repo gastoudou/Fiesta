@@ -27,7 +27,7 @@ public:
 
 	int GetNbActionsSelected() const
 	{
-		return actionsSelected.size();
+		return ( int )actionsSelected.size();
 	}
 
 	const std::string& GetActionSelectedName( int _id )

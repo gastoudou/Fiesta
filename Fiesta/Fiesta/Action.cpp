@@ -66,7 +66,7 @@ void ActionServe::Execute()
 
 void ActionServe::Serve( Crowd* _dude, const std::vector< std::string >& _desk )
 {
-	int money = 5 * _dude->GetOrder().size();
+	int money = 5 * ( int )_dude->GetOrder().size();
 
 	if ( _desk.size() == _dude->GetOrder().size() )
 	{

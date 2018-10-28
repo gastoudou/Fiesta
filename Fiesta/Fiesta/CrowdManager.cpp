@@ -110,8 +110,8 @@ void CrowdManager::GetQueueInfo( Crowd* _dude, int& row, int& turn )
 		{
 			if ( seats[ j ][ i ] == _dude )
 			{
-				row = j;
-				turn = i;
+				row = ( int )j;
+				turn = ( int )i;
 				break;
 			}
 		}
