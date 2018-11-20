@@ -11,7 +11,7 @@ public:
 	~StateMachine();
 
 	void Update( const float _dt );
-	void Render( SDL_Renderer* _renderer, TTF_Font* _font );
+	void Render( Renderer* _renderer, FontManager* _fonter );
 
 	void ChangeState( State* _state );
 

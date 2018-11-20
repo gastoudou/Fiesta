@@ -11,7 +11,7 @@ public:
 
 	virtual void Enter() = 0;
 	virtual void Update( const float _dt ) = 0;
-	virtual void Render( SDL_Renderer* _renderer, TTF_Font* _font ) = 0;
+	virtual void Render( Renderer* _renderer, FontManager* _fonter ) = 0;
 	virtual void Exit() = 0;
 
 private:

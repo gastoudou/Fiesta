@@ -35,23 +35,15 @@ void Crowd::Update( const float _dt )
 	}
 }
 
-void Crowd::Render( SDL_Renderer* _renderer, TTF_Font* _font )
+void Crowd::Render( Renderer* _renderer, FontManager* _fonter )
 {
-	SDL_Rect fillRectTarget = { ( int )target.x, ( int )target.y, ( int )size.x, ( int )size.y };
-	SDL_SetRenderDrawColor( _renderer, 0xAB, 0xAA, 0xAA, 0xBB );
-	SDL_RenderFillRect( _renderer, &fillRectTarget );
-
-	SDL_Rect fillRect = { ( int )position.x, ( int )position.y, ( int )size.x, ( int )size.y };
-	SDL_SetRenderDrawColor( _renderer, 0xFF, 0xFF, 0xFF, 0xFF );
-	SDL_RenderFillRect( _renderer, &fillRect );
-
-	SDL_Rect fillRectOut = { ( int )position.x, ( int )position.y, ( int )size.x, ( int )size.y };
-	SDL_SetRenderDrawColor( _renderer, 0xFF, 0x00, 0x00, 0xFF );
-	SDL_RenderDrawRect( _renderer, &fillRectOut );
+	_renderer->DrawFillRect( ( int )target.x, ( int )target.y, ( int )size.x, ( int )size.y, 0xAB, 0xAA, 0xAA, 0xBB );
+	_renderer->DrawFillRect( ( int )position.x, ( int )position.y, ( int )size.x, ( int )size.y, 0xFF, 0xFF, 0xFF, 0xFF );
+	_renderer->DrawOutlineRect( ( int )position.x, ( int )position.y, ( int )size.x, ( int )size.y, 0xFF, 0x00, 0x00, 0xFF );
 
 	if ( stateMachine )
 	{
-		stateMachine->Render( _renderer, _font );
+		stateMachine->Render( _renderer, _fonter );
 	}
 }
 

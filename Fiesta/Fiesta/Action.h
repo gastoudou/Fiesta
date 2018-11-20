@@ -12,7 +12,7 @@ public:
 
 	virtual void Init() override;
 	virtual void Update( const float _dt ) override;
-	virtual void Render( SDL_Renderer* _renderer, TTF_Font* _font ) override;
+	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void ShutDown() override;
 
 	virtual void Execute() = 0;

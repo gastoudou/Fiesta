@@ -4,6 +4,7 @@
 
 class Crowd;
 class State;
+class FontManager;
 
 const Vector2 seatsInitialPosition[ 3 ] =
 {
@@ -20,9 +21,9 @@ public:
 
 	void Add( const Vector2& _position, const Vector2& _size, float _speed, int _target );
 	void Update( const float _dt );
-	void Render( SDL_Renderer* _renderer, TTF_Font* _font );
+	void Render( Renderer* _renderer, FontManager* _fonter );
 
-	void HandleEvents( const SDL_Event& _event );
+	void HandleEvents( const Event& _event );
 
 	State* IAmArrived( Crowd* );
 

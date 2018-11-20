@@ -27,7 +27,7 @@ public:
 
 	virtual void Enter() override;
 	virtual void Update( const float _dt ) override;
-	virtual void Render( SDL_Renderer* _renderer, TTF_Font* _font ) override;
+	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void Exit() override;
 
 	void Speed( float _speed );
@@ -47,7 +47,7 @@ public:
 
 	virtual void Enter() override;
 	virtual void Update( const float _dt ) override;
-	virtual void Render( SDL_Renderer* _renderer, TTF_Font* _font ) override;
+	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void Exit() override;
 
 private:
@@ -65,7 +65,7 @@ public:
 
 	virtual void Enter() override;
 	virtual void Update( const float _dt ) override;
-	virtual void Render( SDL_Renderer* _renderer, TTF_Font* _font ) override;
+	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void Exit() override;
 
 private:
@@ -83,13 +83,16 @@ public:
 
 	virtual void Enter() override;
 	virtual void Update( const float _dt ) override;
-	virtual void Render( SDL_Renderer* _renderer, TTF_Font* _font ) override;
+	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void Exit() override;
 
 private:
 	WaitOrder() = delete;
 	WaitOrder( const WaitOrder& ) = delete;
 	WaitOrder& operator=( const WaitOrder& ) = delete;
+
+	float timer = 0.0f;
+	float limitToWait = 1500.0f;
 };
 
 class WaitForYourTurn : public StateCrowd
@@ -99,11 +102,27 @@ public:
 
 	virtual void Enter() override;
 	virtual void Update( const float _dt ) override;
-	virtual void Render( SDL_Renderer* _renderer, TTF_Font* _font ) override;
+	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void Exit() override;
 
 private:
 	WaitForYourTurn() = delete;
 	WaitForYourTurn( const WaitForYourTurn& ) = delete;
 	WaitForYourTurn& operator=( const WaitForYourTurn& ) = delete;
+};
+
+class Upset : public StateCrowd
+{
+public:
+	Upset( Crowd* _parent );
+
+	virtual void Enter() override;
+	virtual void Update( const float _dt ) override;
+	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
+	virtual void Exit() override;
+
+private:
+	Upset() = delete;
+	Upset( const Upset& ) = delete;
+	Upset& operator=( const Upset& ) = delete;
 };

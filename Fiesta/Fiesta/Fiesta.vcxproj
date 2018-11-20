@@ -77,6 +77,10 @@
     <IncludePath>C:\SDL2_image-2.0.3\include;C:\Program Files %28x86%29\Visual Leak Detector\include;C:\SDL2-2.0.8\include;C:\SDL2_TTF\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\SDL2_image-2.0.3\lib\x64;C:\Program Files %28x86%29\Visual Leak Detector\lib\Win64;C:\SDL2-2.0.8\lib\x64\Release;C:\SDL2_TTF\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\Program Files %28x86%29\Visual Leak Detector\include;C:\SDL2-2.0.8\include;C:\SDL2_TTF\include;C:\SDL2_image-2.0.3\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\SDL2_image-2.0.3\lib\x64;C:\Program Files %28x86%29\Visual Leak Detector\lib\Win64;C:\SDL2-2.0.8\lib\x64\Release;C:\SDL2_TTF\lib\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -92,10 +96,12 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <PreprocessorDefinitions>_x64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -114,13 +120,15 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <PreprocessorDefinitions>_x64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -134,6 +142,7 @@
     <ClCompile Include="ActionsManager.cpp" />
     <ClCompile Include="Crowd.cpp" />
     <ClCompile Include="CrowdManager.cpp" />
+    <ClCompile Include="Event.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MoneyManager.cpp" />
     <ClCompile Include="State.cpp" />
@@ -150,11 +159,19 @@
     <ClInclude Include="BaseObject.h" />
     <ClInclude Include="Crowd.h" />
     <ClInclude Include="CrowdManager.h" />
+    <ClInclude Include="Event.h" />
+    <ClInclude Include="Font.h" />
     <ClInclude Include="MoneyManager.h" />
+    <ClInclude Include="Render.h" />
+    <ClInclude Include="SDLEvent.h" />
+    <ClInclude Include="SDLFont.h" />
+    <ClInclude Include="SDLRenderer.h" />
+    <ClInclude Include="SDLTexture.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateCrowd.h" />
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

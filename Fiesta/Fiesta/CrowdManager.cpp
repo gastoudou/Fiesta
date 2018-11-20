@@ -57,15 +57,15 @@ void CrowdManager::Update( const float _dt )
 	}
 }
 
-void CrowdManager::Render( SDL_Renderer* _renderer, TTF_Font* _font )
+void CrowdManager::Render( Renderer* _renderer, FontManager* _fonter )
 {
 	for ( size_t i = 0; i < crowd.size(); ++i )
 	{
-		crowd[ i ]->Render( _renderer, _font );
+		crowd[ i ]->Render( _renderer, _fonter );
 	}
 }
 
-void CrowdManager::HandleEvents( const SDL_Event& _event )
+void CrowdManager::HandleEvents( const Event& /*_event*/ )
 {
 
 }

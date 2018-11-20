@@ -5,6 +5,7 @@
 #include "Action.h"
 
 class Crowd;
+class Renderer;
 
 class ActionsManager
 {
@@ -16,11 +17,11 @@ public:
 	}
 
 	void Update( const float _dt );
-	void Render( SDL_Renderer* _renderer, TTF_Font* _font );
+	void Render( Renderer* _renderer, FontManager* _fonter );
 
 	void AddSelect( const Vector2& _position, const Vector2& _size, const std::string _name );
 	void AddServe( const Vector2& _position, const Vector2& _size, const std::string _name, int _row );
-	void HandleEvents( const SDL_Event& _event );
+	void HandleEvents( const Event& _event );
 
 	void AddToDesk( const std::string _name );
 	void RemoveFromDesk( Action* _action );

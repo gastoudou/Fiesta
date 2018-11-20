@@ -2,6 +2,8 @@
 
 #pragma once
 
+class FontManager;
+
 class MoneyManager
 {
 public:
@@ -11,9 +13,10 @@ public:
 		return &instance;
 	}
 
-	void Render( SDL_Renderer* _renderer, TTF_Font* _font ) const;
-	void AddMoney( int _money );
+	void		Render( Renderer* _renderer, FontManager* _fonter ) const;
+	void		AddMoney( int _money );
+	int			GetScore() const;
 
 private:
-	int money = 0;
+	int money = 90;
 };

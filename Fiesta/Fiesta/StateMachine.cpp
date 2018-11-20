@@ -24,11 +24,11 @@ void StateMachine::Update( const float _dt )
 	}
 }
 
-void StateMachine::Render( SDL_Renderer* _renderer, TTF_Font* _font )
+void StateMachine::Render( Renderer* _renderer, FontManager* _fonter )
 {
 	if ( currentState )
 	{
-		currentState->Render( _renderer, _font );
+		currentState->Render( _renderer, _fonter );
 	}
 }
 

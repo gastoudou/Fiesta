@@ -13,6 +13,7 @@ class Crowd : public BaseObject
 	friend class PlaceOrder;
 	friend class WaitOrder;
 	friend class WaitForYourTurn;
+	friend class Upset;
 
 public:
 	Crowd( const Vector2& _position, const Vector2& _size, float _speed, const Vector2& _target );
@@ -21,7 +22,7 @@ public:
 
 	virtual void Init() override;
 	virtual void Update( const float _dt ) override;
-	virtual void Render( SDL_Renderer* _renderer, TTF_Font* _font ) override;
+	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void ShutDown() override;
 
 	void ChangeState( State* _newState );

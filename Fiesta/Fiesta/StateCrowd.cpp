@@ -41,18 +41,9 @@ void Move::Update( const float _dt )
 	}
 }
 
-void Move::Render( SDL_Renderer* _renderer, TTF_Font* _font )
+void Move::Render( Renderer* _renderer, FontManager* _fonter )
 {
-	SDL_Color color = { 255, 0, 0 };
-	SDL_Surface * surface = TTF_RenderText_Solid( _font, "State: MOVE", color );
-	SDL_Texture * texture = SDL_CreateTextureFromSurface( _renderer, surface );
-	int texW = 0;
-	int texH = 0;
-	SDL_QueryTexture( texture, NULL, NULL, &texW, &texH );
-	SDL_Rect dstrect = { ( int )parent->position.x + 10, ( int )parent->position.y + 10, texW, texH };
-	SDL_RenderCopy( _renderer, texture, NULL, &dstrect );
-	SDL_DestroyTexture( texture );
-	SDL_FreeSurface( surface );
+	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: MOVE", _fonter->Small() );
 }
 
 void Move::Exit()
@@ -85,18 +76,9 @@ void Idle::Update( const float _dt )
 	}
 }
 
-void Idle::Render( SDL_Renderer* _renderer, TTF_Font* _font )
+void Idle::Render( Renderer* _renderer, FontManager* _fonter )
 {
-	SDL_Color color = { 255, 0, 0 };
-	SDL_Surface * surface = TTF_RenderText_Solid( _font, "State: IDLE", color );
-	SDL_Texture * texture = SDL_CreateTextureFromSurface( _renderer, surface );
-	int texW = 0;
-	int texH = 0;
-	SDL_QueryTexture( texture, NULL, NULL, &texW, &texH );
-	SDL_Rect dstrect = { ( int )parent->position.x + 10, ( int )parent->position.y + 10, texW, texH };
-	SDL_RenderCopy( _renderer, texture, NULL, &dstrect );
-	SDL_DestroyTexture( texture );
-	SDL_FreeSurface( surface );
+	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: IDLE", _fonter->Small() );
 }
 
 void Idle::Exit()
@@ -130,33 +112,13 @@ void PlaceOrder::Update( const float _dt )
 	}
 }
 
-void PlaceOrder::Render( SDL_Renderer* _renderer, TTF_Font* _font )
+void PlaceOrder::Render( Renderer* _renderer, FontManager* _fonter )
 {
-	{
-		SDL_Color color = { 255, 0, 0 };
-		SDL_Surface * surface = TTF_RenderText_Solid( _font, "State: PLACE ORDER", color );
-		SDL_Texture * texture = SDL_CreateTextureFromSurface( _renderer, surface );
-		int texW = 0;
-		int texH = 0;
-		SDL_QueryTexture( texture, NULL, NULL, &texW, &texH );
-		SDL_Rect dstrect = { ( int )parent->position.x + 10, ( int )parent->position.y + 10, texW, texH };
-		SDL_RenderCopy( _renderer, texture, NULL, &dstrect );
-		SDL_DestroyTexture( texture );
-		SDL_FreeSurface( surface );
-	}
+	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: PLACE ORDER", _fonter->Small() );
 
 	for( size_t i = 0; i < parent->GetOrder().size(); ++i )
 	{
-		SDL_Color color = { 0, 0, 0 };
-		SDL_Surface * surface = TTF_RenderText_Solid( _font, parent->GetOrder()[ i ].c_str(), color );
-		SDL_Texture * texture = SDL_CreateTextureFromSurface( _renderer, surface );
-		int texW = 0;
-		int texH = 0;
-		SDL_QueryTexture( texture, NULL, NULL, &texW, &texH );
-		SDL_Rect dstrect = { ( int )parent->position.x + 10, ( int )parent->position.y + 20 + 10 * ( int )i, texW, texH };
-		SDL_RenderCopy( _renderer, texture, NULL, &dstrect );
-		SDL_DestroyTexture( texture );
-		SDL_FreeSurface( surface );
+		_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 20 + 10 * ( int )i, 0, 0, 0, parent->GetOrder()[ i ].c_str(), _fonter->Small() );
 	}
 }
 void PlaceOrder::Exit()
@@ -177,39 +139,26 @@ void WaitOrder::Enter()
 
 void WaitOrder::Update( const float _dt )
 {
+	timer += _dt;
+
+	if ( timer > limitToWait )
+	{
+		parent->ChangeState( new Upset( parent ) );
+	}
+
 	if ( parent->IsServed() )
 	{
 		parent->ChangeState( new Idle( parent ) );
 	}
 }
 
-void WaitOrder::Render( SDL_Renderer* _renderer, TTF_Font* _font )
+void WaitOrder::Render( Renderer* _renderer, FontManager* _fonter )
 {
-	{
-		SDL_Color color = { 255, 0, 0 };
-		SDL_Surface * surface = TTF_RenderText_Solid( _font, "State: WAIT ORDER", color );
-		SDL_Texture * texture = SDL_CreateTextureFromSurface( _renderer, surface );
-		int texW = 0;
-		int texH = 0;
-		SDL_QueryTexture( texture, NULL, NULL, &texW, &texH );
-		SDL_Rect dstrect = { ( int )parent->position.x + 10, ( int )parent->position.y + 10, texW, texH };
-		SDL_RenderCopy( _renderer, texture, NULL, &dstrect );
-		SDL_DestroyTexture( texture );
-		SDL_FreeSurface( surface );
-	}
+	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: WAIT ORDER", _fonter->Small() );
 
 	for ( size_t i = 0; i < parent->GetOrder().size(); ++i )
 	{
-		SDL_Color color = { 0, 0, 0 };
-		SDL_Surface * surface = TTF_RenderText_Solid( _font, parent->GetOrder()[ i ].c_str(), color );
-		SDL_Texture * texture = SDL_CreateTextureFromSurface( _renderer, surface );
-		int texW = 0;
-		int texH = 0;
-		SDL_QueryTexture( texture, NULL, NULL, &texW, &texH );
-		SDL_Rect dstrect = { ( int )parent->position.x + 10, ( int )parent->position.y + 20 + 10 * ( int )i, texW, texH };
-		SDL_RenderCopy( _renderer, texture, NULL, &dstrect );
-		SDL_DestroyTexture( texture );
-		SDL_FreeSurface( surface );
+		_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 20 + 10 * ( int )i, 0, 0, 0, parent->GetOrder()[ i ].c_str(), _fonter->Small() );
 	}
 
 }
@@ -230,26 +179,47 @@ void WaitForYourTurn::Enter()
 
 }
 
-void WaitForYourTurn::Update( const float _dt )
+void WaitForYourTurn::Update( const float /*_dt*/ )
 {
 	parent->RefreshTarget();
 }
 
-void WaitForYourTurn::Render( SDL_Renderer* _renderer, TTF_Font* _font )
+void WaitForYourTurn::Render( Renderer* _renderer, FontManager* _fonter )
 {
-	SDL_Color color = { 255, 0, 0 };
-	SDL_Surface * surface = TTF_RenderText_Solid( _font, "State: WAIT FOR MY TURN...", color );
-	SDL_Texture * texture = SDL_CreateTextureFromSurface( _renderer, surface );
-	int texW = 0;
-	int texH = 0;
-	SDL_QueryTexture( texture, NULL, NULL, &texW, &texH );
-	SDL_Rect dstrect = { ( int )parent->position.x + 10, ( int )parent->position.y + 10, texW, texH };
-	SDL_RenderCopy( _renderer, texture, NULL, &dstrect );
-	SDL_DestroyTexture( texture );
-	SDL_FreeSurface( surface );
+	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: WAIT FOR MY TURN...", _fonter->Small() );
 }
 
 void WaitForYourTurn::Exit()
+{
+
+}
+
+
+Upset::Upset( Crowd* _parent )
+	: StateCrowd( _parent )
+{
+
+}
+
+void Upset::Enter()
+{
+
+}
+
+void Upset::Update( const float _dt )
+{
+	static float timer = 0.0f;
+	timer += _dt;
+	if ( timer > 250.0f )
+		parent->ChangeState( new Idle( parent ) );
+}
+
+void Upset::Render( Renderer* _renderer, FontManager* _fonter )
+{
+	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: UPSET...", _fonter->Small() );
+}
+
+void Upset::Exit()
 {
 
 }

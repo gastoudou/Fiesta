@@ -5,70 +5,23 @@
 #include "ActionsManager.h"
 #include "MoneyManager.h"
 
+#include "SDLRenderer.h"
+#include "SDLEvent.h"
+
 #pragma optimize( "", off )
 
-const int SCREEN_WIDTH = 540;
-const int SCREEN_HEIGHT = 960;
+void RenderStatic( Renderer* );
+void DrawPause( Renderer* _renderer );
+void DrawTitle( Renderer* _renderer );
 
-void RenderStatic( SDL_Renderer* );
-void DrawPause( SDL_Renderer* _renderer, TTF_Font* _font );
-void DrawTitle( SDL_Renderer* _renderer, TTF_Font* _font );
-SDL_Texture* loadTexture( SDL_Renderer* _renderer, std::string path );
-
-const float FIXED_TIME_STAMP = 0.066f;
-
-int main( int argc, char* args[] )
+int main( int /*argc*/, char** /*args[]*/ )
 {
 	srand( static_cast< unsigned int >( time( NULL ) ) );
 
-	SDL_Window* window = NULL;
-	SDL_Renderer* renderer = NULL;
-
-	if ( SDL_Init( SDL_INIT_VIDEO ) < 0 )
-	{
-		std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
-		return -1;
-	}
-	else
-	{
-		if ( TTF_Init() < 0 )
-		{
-			std::cout << "TTF could not initialize! TTF_GetError: " << TTF_GetError() << std::endl;
-			return -1;
-		}
-		else
-		{
-			window = SDL_CreateWindow( "Fiesta Baiona", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
-			if ( window == NULL )
-			{
-				std::cout << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
-				return -1;
-			}
-			else
-			{
-				renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
-				SDL_SetRenderDrawColor( renderer, 0xFF, 0xFF, 0xFF, 0xFF );
-
-				//Initialize PNG loading
-				int imgFlags = IMG_INIT_JPG;
-				if( !( IMG_Init( imgFlags ) & imgFlags ) )
-				{
-					std::cout << "SDL_image could not initialize! SDL_image Error: " << IMG_GetError() << std::endl;
-					return -1;
-				}
-			}
-		}
-	}
-
-	TTF_Font * font = TTF_OpenFont( "calibrib.ttf", 20 );
-	TTF_Font * small_font = TTF_OpenFont( "calibrib.ttf", 12 );
-
 	bool quit = false;
-	SDL_Event e;
+	
 
-	float x = 0.0f;
-	float y = 0.0f;
-	float deltaTime = FIXED_TIME_STAMP;
+	float deltaTime = EventManager::FIXED_TIME_STAMP;
 	bool pause = false;
 
 	// add options
@@ -81,147 +34,70 @@ int main( int argc, char* args[] )
 	ActionsManager::GetInstance()->AddServe( Vector2( 180.0f, 640.0f ), Vector2( 180.0f, 90.0f ), "bar2", 1 );
 	ActionsManager::GetInstance()->AddServe( Vector2( 360.0f, 640.0f ), Vector2( 180.0f, 90.0f ), "bar3", 2 );
 
+	Renderer* renderer = new SDLRenderer;
+	EventManager* eventer = new SDLEventManager;
+
+	renderer->Init();
 
 	// TEMP
-	SDL_Texture* gTexture = loadTexture( renderer, "affiche.jpg" );
+	Texture* gTexture = renderer->LoadTexture( "affiche.jpg" );
 
 	while ( !quit )
 	{
-		while ( SDL_PollEvent( &e ) != 0 )
-		{
-			const Uint8* keyboardState = SDL_GetKeyboardState( NULL );
+		eventer->Update( quit, pause, deltaTime );
 
-			if ( e.type == SDL_QUIT )
-			{
-				quit = true;
-			}
-
-			if ( e.type == SDL_KEYDOWN || e.type == SDL_KEYUP )
-			{
-				if ( keyboardState[ SDL_SCANCODE_ESCAPE ] )
-				{
-					quit = true;
-				}
-				if ( keyboardState[ SDL_SCANCODE_SPACE ] )
-				{
-					pause = !pause;
-					if ( pause )
-						deltaTime = 0.0f;
-					else
-						deltaTime = FIXED_TIME_STAMP;
-				}
-			}
-			ActionsManager::GetInstance()->HandleEvents( e );
-		}
-
-		SDL_SetRenderDrawColor( renderer, 0xBB, 0xBB, 0xBB, 0xFF );
-		SDL_RenderClear( renderer );
-
+		// UPDATE
 		ActionsManager::GetInstance()->Update( deltaTime );
-		CrowdManager::GetInstance()->Update( deltaTime );
+		const int level = MoneyManager::GetInstance()->GetScore() / 100;
+		CrowdManager::GetInstance()->Update( deltaTime * ( 1.0f + level * 0.1f ) );
 
-		ActionsManager::GetInstance()->Render( renderer, small_font );
-		CrowdManager::GetInstance()->Render( renderer, small_font );
+		// RENDER
+		renderer->StartRender();
 
-		MoneyManager::GetInstance()->Render( renderer, small_font );
+		ActionsManager::GetInstance()->Render( renderer, SDLFontManager::GetInstance() );
+		CrowdManager::GetInstance()->Render( renderer, SDLFontManager::GetInstance() );
+
+		MoneyManager::GetInstance()->Render( renderer, SDLFontManager::GetInstance() );
 		RenderStatic( renderer );
+
+		std::stringstream oss;
+		oss << "Level: " << level + 1;
+		renderer->DrawText( 450, 50, 0, 0, 0, oss.str().c_str(), SDLFontManager::GetInstance()->Small() );
 
 		if ( pause )
 		{
-			SDL_RenderCopy( renderer, gTexture, NULL, NULL );
-			DrawPause( renderer, font );
+			renderer->DrawBG( gTexture, 0, 0 );
+			DrawPause( renderer );
 		}
 		else
 		{
-			DrawTitle( renderer, font );
+			DrawTitle( renderer );
 		}
 
-		SDL_RenderPresent( renderer );
+		renderer->EndRender();
 	}
 
-	SDL_DestroyTexture( gTexture );
-	gTexture = NULL;
-
-	TTF_CloseFont( font );
-	TTF_Quit();
-
-	IMG_Quit();
-
-	SDL_DestroyWindow( window );
-	SDL_Quit();
+	renderer->FreeTexture( gTexture );
+	renderer->ShutDown();
 
 	return 0;
 }
 
-void RenderStatic( SDL_Renderer* _renderer )
+void RenderStatic( Renderer* _renderer )
 {
-	// bar
-	{
-		SDL_Rect fillRect = { 0, 640, 540, 90 };
-		SDL_SetRenderDrawColor( _renderer, 0xCC, 0x66, 0x00, 0xFF );
-		SDL_RenderFillRect( _renderer, &fillRect );
-
-		SDL_Rect outlineRect = { 0, 640, 540, 90 };
-		SDL_SetRenderDrawColor( _renderer, 0x00, 0x00, 0x00, 0xFF );
-		SDL_RenderDrawRect( _renderer, &outlineRect );
-	}
+	_renderer->DrawFillRect( 0, 640, 540, 90, 0xCC, 0x66, 0x00, 0xFF );
+	_renderer->DrawOutlineRect( 0, 640, 540, 90, 0x00, 0x00, 0x00, 0xFF );
 }
 
-void DrawTitle( SDL_Renderer* _renderer, TTF_Font* _font )
+void DrawTitle( Renderer* _renderer )
 {
-	SDL_Color color = { 255, 0, 0 };
-	SDL_Surface * surface = TTF_RenderText_Solid( _font, "Fiesta Baiona", color );
-	SDL_Texture * texture = SDL_CreateTextureFromSurface( _renderer, surface );
-	int texW = 0;
-	int texH = 0;
-	SDL_QueryTexture( texture, NULL, NULL, &texW, &texH );
-	SDL_Rect dstrect = { 200, 10, texW, texH };
-	SDL_RenderCopy( _renderer, texture, NULL, &dstrect );
-	SDL_DestroyTexture( texture );
-	SDL_FreeSurface( surface );
+	_renderer->DrawText( 540 / 2, 20, 255, 0, 0, "Fiesta Baiona", SDLFontManager::GetInstance()->Normal(), Font::CENTER );
 }
 
-void DrawPause( SDL_Renderer* _renderer, TTF_Font* _font )
+void DrawPause( Renderer* _renderer )
 {
-	SDL_Rect fillRect = { 0, SCREEN_HEIGHT / 2 - 10, SCREEN_WIDTH, 20 };
-	SDL_SetRenderDrawColor( _renderer, 0xFF, 0xFF, 0xFF, 0xFF );
-	SDL_RenderFillRect( _renderer, &fillRect );
-
-	SDL_Color color = { 255, 50, 50 };
-	SDL_Surface * surfacePause = TTF_RenderText_Solid( _font, "- PAUSE -", color );
-	SDL_Texture * texturePause = SDL_CreateTextureFromSurface( _renderer, surfacePause );
-	int texW = 0;
-	int texH = 0;
-	SDL_QueryTexture( texturePause, NULL, NULL, &texW, &texH );
-	SDL_Rect dstrectPause = { SCREEN_WIDTH / 2 - texW / 2, SCREEN_HEIGHT / 2 - texH / 2, texW, texH };
-	SDL_RenderCopy( _renderer, texturePause, NULL, &dstrectPause );
-	SDL_DestroyTexture( texturePause );
-	SDL_FreeSurface( surfacePause );
-}
-
-SDL_Texture* loadTexture( SDL_Renderer* _renderer, std::string path )
-{
-	//The final texture
-	SDL_Texture* newTexture = NULL;
-	//Load image at specified path
-	SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
-	
-	if( loadedSurface == NULL )
-	{
-		printf( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
-	}
-	else
-	{
-		//Create texture from surface pixels
-		newTexture = SDL_CreateTextureFromSurface( _renderer, loadedSurface );
-		if( newTexture == NULL )
-		{
-			printf( "Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
-		}
-		//Get rid of old loaded surface
-		SDL_FreeSurface( loadedSurface );
-	}
-	return newTexture;
+	_renderer->DrawFillRect( 0, SCREEN_HEIGHT / 2 - 10, SCREEN_WIDTH, 20, 0xFF, 0xFF, 0xFF, 0xFF );
+	_renderer->DrawText( SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 255, 50, 50, "- PAUSE -", SDLFontManager::GetInstance()->Normal(), Font::CENTER );
 }
 
 #pragma optimize( "", on )

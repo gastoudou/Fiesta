@@ -38,44 +38,32 @@ void ActionsManager::Update( const float _dt )
 	}
 }
 
-void ActionsManager::Render( SDL_Renderer* _renderer, TTF_Font* _font )
+void ActionsManager::Render( Renderer* _renderer, FontManager* _fonter )
 {
 	for ( size_t i = 0; i < actions.size(); ++i )
 	{
-		actions[ i ]->Render( _renderer, _font );
+		actions[ i ]->Render( _renderer, _fonter );
 	}
 
 	// render desk
 	for ( size_t i = 0; i < desk.size(); ++i )
 	{
-		SDL_Color color = { 255, 0, 0 };
-		SDL_Surface * surface = TTF_RenderText_Solid( _font, desk[ i ].c_str(), color );
-		SDL_Texture * texture = SDL_CreateTextureFromSurface( _renderer, surface );
-		int texW = 0;
-		int texH = 0;
-		SDL_QueryTexture( texture, NULL, NULL, &texW, &texH );
-		SDL_Rect dstrect = { 10, 730 + (int)i * 10, texW, texH };
-		SDL_RenderCopy( _renderer, texture, NULL, &dstrect );
-		SDL_DestroyTexture( texture );
-		SDL_FreeSurface( surface );
+		_renderer->DrawText( 10, 730 + ( int )i * 10, 255, 0, 0, desk[ i ].c_str(), _fonter->Small() );
 	}
 }
 
-void ActionsManager::HandleEvents( const SDL_Event& _event )
+void ActionsManager::HandleEvents( const Event& _event )
 {
-	if ( _event.type == SDL_MOUSEBUTTONDOWN )
+	if ( _event.ClicLeft() )
 	{
-		if ( _event.button.button == SDL_BUTTON_LEFT )
+		for ( size_t i = 0; i < actions.size(); ++i )
 		{
-			for ( size_t i = 0; i < actions.size(); ++i )
-			{
-				Action* current = actions[ i ];
+			Action* current = actions[ i ];
 
-				if ( ( current->position.x < _event.motion.x && current->position.x + current->size.x > _event.motion.x )
-					&& ( current->position.y < _event.motion.y && current->position.y + current->size.y > _event.motion.y ) )
-				{
-					current->Execute();
-				}
+			if ( ( current->position.x < _event.Motion().x && current->position.x + current->size.x > _event.Motion().x )
+				&& ( current->position.y < _event.Motion().y && current->position.y + current->size.y > _event.Motion().y ) )
+			{
+				current->Execute();
 			}
 		}
 	}

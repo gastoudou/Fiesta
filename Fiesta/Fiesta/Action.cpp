@@ -24,29 +24,16 @@ void Action::Init()
 
 }
 
-void Action::Update( const float _dt )
+void Action::Update( const float /*_dt*/ )
 {
 
 }
 
-void Action::Render( SDL_Renderer* _renderer, TTF_Font* _font )
+void Action::Render( Renderer* _renderer, FontManager* _fonter )
 {
-	SDL_Rect fillRect = { ( int )position.x, ( int )position.y, ( int )size.x, ( int )size.y };
-	SDL_SetRenderDrawColor( _renderer, 0x00, 0x00, 0x00, 0xFF );
-	SDL_RenderFillRect( _renderer, &fillRect );
-	SDL_SetRenderDrawColor( _renderer, 0x00, 0xFF, 0x00, 0xFF );
-	SDL_RenderDrawRect( _renderer, &fillRect );
-
-	SDL_Color color = { 255, 0, 0 };
-	SDL_Surface * surface = TTF_RenderText_Solid( _font, name.c_str(), color );
-	SDL_Texture * texture = SDL_CreateTextureFromSurface( _renderer, surface );
-	int texW = 0;
-	int texH = 0;
-	SDL_QueryTexture( texture, NULL, NULL, &texW, &texH );
-	SDL_Rect dstrect = { ( int )position.x + 10, ( int )position.y + 10, texW, texH };
-	SDL_RenderCopy( _renderer, texture, NULL, &dstrect );
-	SDL_DestroyTexture( texture );
-	SDL_FreeSurface( surface );
+	_renderer->DrawFillRect( ( int )position.x, ( int )position.y, ( int )size.x, ( int )size.y, 0x00, 0x00, 0x00, 0xFF );
+	_renderer->DrawOutlineRect( ( int )position.x, ( int )position.y, ( int )size.x, ( int )size.y, 0x00, 0xFF, 0x00, 0xFF );
+	_renderer->DrawText( ( int )position.x + 10, ( int )position.y + 10, 255, 0, 0, name.c_str(), _fonter->Small() );
 }
 
 void Action::ShutDown()

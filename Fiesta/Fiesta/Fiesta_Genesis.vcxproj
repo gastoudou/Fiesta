@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{2C877592-9C3C-4355-9066-24077756089F}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <NMakeBuildCommandLine>%GDK_WIN%\bin\make -f %GDK_WIN%\makefile.gen</NMakeBuildCommandLine>
+    <NMakeOutput>Fiesta_Genesis.exe</NMakeOutput>
+    <NMakePreprocessorDefinitions>_GENESIS;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <NMakeBuildCommandLine>%GDK_WIN%\bin\make -f %GDK_WIN%\makefile.gen</NMakeBuildCommandLine>
+    <NMakeOutput>Fiesta_Genesis.exe</NMakeOutput>
+    <NMakePreprocessorDefinitions>Genesis;WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <NMakeBuildCommandLine>%GDK_WIN%\bin\make -f %GDK_WIN%\makefile.gen</NMakeBuildCommandLine>
+    <NMakeOutput>Fiesta_Genesis.exe</NMakeOutput>
+    <NMakePreprocessorDefinitions>Genesis;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <NMakeBuildCommandLine>%GDK_WIN%\bin\make -f %GDK_WIN%\makefile.gen</NMakeBuildCommandLine>
+    <NMakeOutput>Fiesta_Genesis.exe</NMakeOutput>
+    <NMakePreprocessorDefinitions>Genesis;WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Fiesta\Action.cpp" />
+    <ClCompile Include="..\Fiesta\ActionsManager.cpp" />
+    <ClCompile Include="..\Fiesta\Crowd.cpp" />
+    <ClCompile Include="..\Fiesta\CrowdManager.cpp" />
+    <ClCompile Include="..\Fiesta\Event.cpp" />
+    <ClCompile Include="..\Fiesta\MoneyManager.cpp" />
+    <ClCompile Include="..\Fiesta\State.cpp" />
+    <ClCompile Include="..\Fiesta\StateCrowd.cpp" />
+    <ClCompile Include="..\Fiesta\StateMachine.cpp" />
+    <ClCompile Include="..\Fiesta\stdafx.cpp" />
+    <ClCompile Include="main.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Fiesta\Action.h" />
+    <ClInclude Include="..\Fiesta\ActionsManager.h" />
+    <ClInclude Include="..\Fiesta\BaseObject.h" />
+    <ClInclude Include="..\Fiesta\Crowd.h" />
+    <ClInclude Include="..\Fiesta\CrowdManager.h" />
+    <ClInclude Include="..\Fiesta\Event.h" />
+    <ClInclude Include="..\Fiesta\Font.h" />
+    <ClInclude Include="..\Fiesta\MoneyManager.h" />
+    <ClInclude Include="..\Fiesta\Render.h" />
+    <ClInclude Include="..\Fiesta\SGDKEvent.h" />
+    <ClInclude Include="..\Fiesta\SGDKFont.h" />
+    <ClInclude Include="..\Fiesta\SGDKRenderer.h" />
+    <ClInclude Include="..\Fiesta\SGDKTexture.h" />
+    <ClInclude Include="..\Fiesta\State.h" />
+    <ClInclude Include="..\Fiesta\StateCrowd.h" />
+    <ClInclude Include="..\Fiesta\StateMachine.h" />
+    <ClInclude Include="..\Fiesta\stdafx.h" />
+    <ClInclude Include="..\Fiesta\Texture.h" />
+    <ClInclude Include="..\Fiesta\Vector.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
