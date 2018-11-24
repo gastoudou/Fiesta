@@ -16,7 +16,7 @@ public:
 		return &instance;
 	}
 
-	void Update( const float _dt );
+	void Update( const float _dt, EventManager* _eventer );
 	void Render( Renderer* _renderer, FontManager* _fonter );
 
 	void AddSelect( const Vector2& _position, const Vector2& _size, const std::string _name );

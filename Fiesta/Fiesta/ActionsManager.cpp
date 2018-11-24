@@ -30,12 +30,13 @@ void ActionsManager::AddServe( const Vector2& _position, const Vector2& _size, c
 	actions.push_back( new ActionServe( _position, _size, _name, _row ) );
 }
 
-void ActionsManager::Update( const float _dt )
+void ActionsManager::Update( const float _dt, EventManager* _eventer )
 {
 	for ( size_t i = 0; i < actions.size(); ++i )
 	{
-		actions[ i ]->Update( _dt );
+		actions[ i ]->Update( _dt, _eventer );
 	}
+	HandleEvents( _eventer->GetEvents() );
 }
 
 void ActionsManager::Render( Renderer* _renderer, FontManager* _fonter )

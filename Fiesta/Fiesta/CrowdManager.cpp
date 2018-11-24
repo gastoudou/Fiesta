@@ -34,7 +34,7 @@ void CrowdManager::Add( const Vector2& _position, const Vector2& _size, float _s
 	seats[ _target ].push_back( person );
 }
 
-void CrowdManager::Update( const float _dt )
+void CrowdManager::Update( const float _dt, EventManager* _eventer )
 {
 	timer -= _dt;
 	if ( timer < 0.0f )
@@ -46,7 +46,7 @@ void CrowdManager::Update( const float _dt )
 	auto it = crowd.begin();
 	for ( ; it != crowd.end(); )
 	{
-		( *it )->Update( _dt );
+		( *it )->Update( _dt, _eventer );
 		if ( ( *it )->ToRemove() )
 		{
 			delete *it;

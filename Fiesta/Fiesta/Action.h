@@ -11,7 +11,7 @@ public:
 	~Action();
 
 	virtual void Init() override;
-	virtual void Update( const float _dt ) override;
+	virtual void Update( const float _dt, EventManager* _eventer ) override;
 	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void ShutDown() override;
 

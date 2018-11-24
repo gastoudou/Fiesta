@@ -9,3 +9,8 @@ State::State()
 {
 
 }
+
+State::~State()
+{
+
+}

@@ -10,7 +10,7 @@ public:
 	StateMachine() {}
 	~StateMachine();
 
-	void Update( const float _dt );
+	void Update( const float _dt, EventManager* _eventer );
 	void Render( Renderer* _renderer, FontManager* _fonter );
 
 	void ChangeState( State* _state );

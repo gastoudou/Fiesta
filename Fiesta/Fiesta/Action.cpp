@@ -24,7 +24,7 @@ void Action::Init()
 
 }
 
-void Action::Update( const float /*_dt*/ )
+void Action::Update( const float /*_dt*/, EventManager* /*_eventer*/ )
 {
 
 }

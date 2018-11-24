@@ -27,11 +27,11 @@ void Crowd::Init()
 	stateMachine->ChangeState( new Move( this, speed ) );
 }
 
-void Crowd::Update( const float _dt )
+void Crowd::Update( const float _dt, EventManager* _eventer )
 {
 	if ( stateMachine )
 	{
-		stateMachine->Update( _dt );
+		stateMachine->Update( _dt, _eventer );
 	}
 }
 

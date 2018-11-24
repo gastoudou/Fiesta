@@ -16,11 +16,11 @@ StateMachine::~StateMachine()
 	}
 }
 
-void StateMachine::Update( const float _dt )
+void StateMachine::Update( const float _dt, EventManager* _eventer )
 {
 	if ( currentState )
 	{
-		currentState->Update( _dt );
+		currentState->Update( _dt, _eventer );
 	}
 }
 

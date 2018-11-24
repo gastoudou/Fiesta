@@ -20,7 +20,7 @@ public:
 	~CrowdManager();
 
 	void Add( const Vector2& _position, const Vector2& _size, float _speed, int _target );
-	void Update( const float _dt );
+	void Update( const float _dt, EventManager* /*_eventer*/ );
 	void Render( Renderer* _renderer, FontManager* _fonter );
 
 	void HandleEvents( const Event& _event );

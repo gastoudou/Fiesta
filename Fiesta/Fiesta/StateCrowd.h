@@ -26,7 +26,7 @@ public:
 	Move( Crowd* _parent, float _speed );
 
 	virtual void Enter() override;
-	virtual void Update( const float _dt ) override;
+	virtual void Update( const float _dt, EventManager* _eventer ) override;
 	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void Exit() override;
 
@@ -46,7 +46,7 @@ public:
 	Idle( Crowd* _parent );
 
 	virtual void Enter() override;
-	virtual void Update( const float _dt ) override;
+	virtual void Update( const float _dt, EventManager* _eventer ) override;
 	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void Exit() override;
 
@@ -64,7 +64,7 @@ public:
 	PlaceOrder( Crowd* _parent );
 
 	virtual void Enter() override;
-	virtual void Update( const float _dt ) override;
+	virtual void Update( const float _dt, EventManager* _eventer ) override;
 	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void Exit() override;
 
@@ -82,7 +82,7 @@ public:
 	WaitOrder( Crowd* _parent );
 
 	virtual void Enter() override;
-	virtual void Update( const float _dt ) override;
+	virtual void Update( const float _dt, EventManager* _eventer ) override;
 	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void Exit() override;
 
@@ -101,7 +101,7 @@ public:
 	WaitForYourTurn( Crowd* _parent );
 
 	virtual void Enter() override;
-	virtual void Update( const float _dt ) override;
+	virtual void Update( const float _dt, EventManager* _eventer ) override;
 	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void Exit() override;
 
@@ -117,7 +117,7 @@ public:
 	Upset( Crowd* _parent );
 
 	virtual void Enter() override;
-	virtual void Update( const float _dt ) override;
+	virtual void Update( const float _dt, EventManager* _eventer ) override;
 	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void Exit() override;
 

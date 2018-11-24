@@ -16,4 +16,5 @@ public:
 	const static float FIXED_TIME_STAMP;
 
 	virtual void Update( bool& quit, bool& pause, float& deltaTime ) = 0;
+	virtual const Event& GetEvents() const = 0;
 };

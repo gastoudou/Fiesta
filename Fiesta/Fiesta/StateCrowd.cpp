@@ -27,7 +27,7 @@ void Move::Enter()
 	parent->direction = newDirection;
 }
 
-void Move::Update( const float _dt )
+void Move::Update( const float _dt, EventManager* /*_eventer*/ )
 {
 	Vector2 save_direction = parent->direction;
 	Vector2 save_position = parent->position;
@@ -67,7 +67,7 @@ void Idle::Enter()
 	timer = 0.0f;
 }
 
-void Idle::Update( const float _dt )
+void Idle::Update( const float _dt, EventManager* /*_eventer*/ )
 {
 	timer -= _dt;
 	if ( timer < 0.0f )
@@ -103,7 +103,7 @@ void PlaceOrder::Enter()
 	}
 }
 
-void PlaceOrder::Update( const float _dt )
+void PlaceOrder::Update( const float _dt, EventManager* /*_eventer*/ )
 {
 	timer -= _dt;
 	if ( timer < 0.0f )
@@ -137,7 +137,7 @@ void WaitOrder::Enter()
 	parent->isWaiting = true;
 }
 
-void WaitOrder::Update( const float _dt )
+void WaitOrder::Update( const float _dt, EventManager* /*_eventer*/ )
 {
 	timer += _dt;
 
@@ -179,7 +179,7 @@ void WaitForYourTurn::Enter()
 
 }
 
-void WaitForYourTurn::Update( const float /*_dt*/ )
+void WaitForYourTurn::Update( const float /*_dt*/, EventManager* /*_eventer*/ )
 {
 	parent->RefreshTarget();
 }
@@ -206,7 +206,7 @@ void Upset::Enter()
 
 }
 
-void Upset::Update( const float _dt )
+void Upset::Update( const float _dt, EventManager* /*_eventer*/ )
 {
 	static float timer = 0.0f;
 	timer += _dt;
