@@ -21,7 +21,6 @@ public:
 
 	void AddSelect( const Vector2& _position, const Vector2& _size, const std::string _name );
 	void AddServe( const Vector2& _position, const Vector2& _size, const std::string _name, int _row );
-	void HandleEvents( const Event& _event );
 
 	void AddToDesk( const std::string _name );
 	void RemoveFromDesk( Action* _action );
@@ -40,8 +39,12 @@ private:
 	ActionsManager();
 	~ActionsManager();
 
+	void HandleEvents( const Event& _event );
+
 	std::vector< Action* > actions;
 	std::vector< Action* > actionsSelected;
 
 	std::vector< std::string > desk;
+
+	bool canClic = true;
 };

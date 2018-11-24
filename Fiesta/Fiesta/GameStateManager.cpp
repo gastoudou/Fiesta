@@ -6,6 +6,7 @@
 #include "SDLFont.h"
 #include "SDLRenderer.h"
 #include "SDLEvent.h"
+#include "SDLTexture.h"
 
 #include "StateMachine.h"
 #include "GameState.h"
@@ -22,9 +23,9 @@ GameStateManager::GameStateManager()
 
 	renderer = new SDLRenderer;
 	eventer = new SDLEventManager;
-
 	renderer->Init();
 
+	SDLTextureManager::GetInstance()->Init( renderer );
 }
 
 GameStateManager::~GameStateManager()

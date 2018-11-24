@@ -43,6 +43,6 @@ private:
 	void DrawTitle( Renderer* _renderer );
 	void DrawPause( Renderer* _renderer );
 
-	Texture* gTexture = nullptr;
+	Texture* bgTexture = nullptr;
 	GameStateManager* parent = nullptr;
 };

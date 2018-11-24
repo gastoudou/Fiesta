@@ -32,11 +32,11 @@ void ActionsManager::AddServe( const Vector2& _position, const Vector2& _size, c
 
 void ActionsManager::Update( const float _dt, EventManager* _eventer )
 {
+	HandleEvents( _eventer->GetEvents() );
 	for ( size_t i = 0; i < actions.size(); ++i )
 	{
 		actions[ i ]->Update( _dt, _eventer );
 	}
-	HandleEvents( _eventer->GetEvents() );
 }
 
 void ActionsManager::Render( Renderer* _renderer, FontManager* _fonter )
@@ -55,7 +55,7 @@ void ActionsManager::Render( Renderer* _renderer, FontManager* _fonter )
 
 void ActionsManager::HandleEvents( const Event& _event )
 {
-	if ( _event.ClicLeft() )
+	if ( _event.ClicLeft() && canClic )
 	{
 		for ( size_t i = 0; i < actions.size(); ++i )
 		{
@@ -67,6 +67,12 @@ void ActionsManager::HandleEvents( const Event& _event )
 				current->Execute();
 			}
 		}
+		canClic = false;
+	}
+
+	if ( _event.ClicLeft() == false )
+	{
+		canClic = true;
 	}
 }
 

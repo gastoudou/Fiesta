@@ -6,6 +6,7 @@
 #include "SDLFont.h"
 #include "SDLRenderer.h"
 #include "SDLEvent.h"
+#include "SDLTexture.h"
 
 #include "CrowdManager.h"
 #include "ActionsManager.h"
@@ -71,6 +72,8 @@ void GameState_Gameplay::Enter()
 	ActionsManager::GetInstance()->AddServe( Vector2( 0.0f, 640.0f ), Vector2( 180.0f, 90.0f ), "bar1", 0 );
 	ActionsManager::GetInstance()->AddServe( Vector2( 180.0f, 640.0f ), Vector2( 180.0f, 90.0f ), "bar2", 1 );
 	ActionsManager::GetInstance()->AddServe( Vector2( 360.0f, 640.0f ), Vector2( 180.0f, 90.0f ), "bar3", 2 );
+
+	bgTexture = SDLTextureManager::GetInstance()->LoadTexture( "affiche.jpg" );
 }
 
 void GameState_Gameplay::Update( const float _dt, EventManager* _eventer )
@@ -111,7 +114,7 @@ void GameState_Gameplay::Render( Renderer* _renderer, FontManager* _fonter )
 
 void GameState_Gameplay::Exit()
 {
-
+	SDLTextureManager::GetInstance()->FreeTexture( bgTexture );
 }
 
 void GameState_Gameplay::RenderStatic( Renderer* _renderer )
@@ -127,18 +130,7 @@ void GameState_Gameplay::DrawTitle( Renderer* _renderer )
 
 void GameState_Gameplay::DrawPause( Renderer* _renderer )
 {
-	if ( gTexture == nullptr )
-	{
-		gTexture = _renderer->LoadTexture( "affiche.jpg" );
-	}
-
-	if ( gTexture )
-	{
-		_renderer->DrawBG( gTexture, 0, 0 );
-		_renderer->FreeTexture( gTexture );
-		gTexture = nullptr;
-	}
-
+	_renderer->DrawBG( bgTexture, 0, 0 );
 	_renderer->DrawFillRect( 0, SCREEN_HEIGHT / 2 - 10, SCREEN_WIDTH, 20, 0xFF, 0xFF, 0xFF, 0xFF );
 	_renderer->DrawText( SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 255, 50, 50, "- PAUSE -", SDLFontManager::GetInstance()->Normal(), Font::CENTER );
 }
