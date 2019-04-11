@@ -9,6 +9,8 @@
 #include <queue>
 #include <time.h>
 #include <sstream>
+#include <thread>
+
 #include "Vector.h"
 #include "Render.h"
 #include "Texture.h"

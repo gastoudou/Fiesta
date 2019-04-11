@@ -15,17 +15,17 @@ GameStateManager::GameStateManager()
 {
 	srand( static_cast< unsigned int >( time( NULL ) ) );
 
-	stateMachine = new StateMachine;
-	stateMachine->ChangeState( new GameState_MainMenu( this ) );
-
-	quit = false;
-	deltaTime = EventManager::FIXED_TIME_STAMP;
-
 	renderer = new SDLRenderer;
 	eventer = new SDLEventManager;
 	renderer->Init();
 
 	SDLTextureManager::GetInstance()->Init( renderer );
+
+	stateMachine = new StateMachine;
+	stateMachine->ChangeState( new GameState_MainMenu( this ) );
+
+	quit = false;
+	deltaTime = EventManager::FIXED_TIME_STAMP;
 }
 
 GameStateManager::~GameStateManager()
@@ -37,8 +37,6 @@ void GameStateManager::Update()
 {
 	eventer->Update( quit, pause, deltaTime );
 	stateMachine->Update( deltaTime, eventer );
-
-	// RENDER
 	renderer->StartRender();
 	stateMachine->Render( renderer, SDLFontManager::GetInstance() );
 	renderer->EndRender();

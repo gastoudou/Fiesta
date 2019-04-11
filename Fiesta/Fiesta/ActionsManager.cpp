@@ -21,13 +21,16 @@ ActionsManager::~ActionsManager()
 void ActionsManager::AddSelect( const Vector2& _position, const Vector2& _size, const std::string _name )
 {
 	ActionSelect* action = new ActionSelect( _position, _size, _name );
+	action->Init();
 	actions.push_back( action );
 	actionsSelected.push_back( action );
 }
 
 void ActionsManager::AddServe( const Vector2& _position, const Vector2& _size, const std::string _name, int _row )
 {
-	actions.push_back( new ActionServe( _position, _size, _name, _row ) );
+	ActionServe* action = new ActionServe( _position, _size, _name, _row );
+	action->Init();
+	actions.push_back( action );
 }
 
 void ActionsManager::Update( const float _dt, EventManager* _eventer )

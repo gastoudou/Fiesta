@@ -18,10 +18,10 @@ void SDLFontManager::Init()
 	}
 
 	font = new SDLFont;
-	font->font = TTF_OpenFont( "calibrib.ttf", 20 );
+	font->font = TTF_OpenFont( "resources/calibrib.ttf", 20 );
 
 	small_font = new SDLFont;
-	small_font->font = TTF_OpenFont( "calibrib.ttf", 12 );
+	small_font->font = TTF_OpenFont( "resources/calibrib.ttf", 12 );
 
 	init = true;
 }

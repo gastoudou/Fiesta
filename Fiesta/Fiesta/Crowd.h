@@ -43,6 +43,7 @@ private:
 	void RefreshTarget();
 
 	StateMachine*		stateMachine = nullptr;
+	Texture*			festayreTexture = nullptr;
 	Vector2				target;
 	float				speed = 0.0f;
 	bool				isServed = false;

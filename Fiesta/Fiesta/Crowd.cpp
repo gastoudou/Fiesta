@@ -3,6 +3,9 @@
 #include "stdafx.h"
 #include "Crowd.h"
 
+#include "SDLRenderer.h"
+#include "SDLTexture.h"
+
 #include "CrowdManager.h"
 #include "StateMachine.h"
 #include "StateCrowd.h"
@@ -23,6 +26,8 @@ Crowd::~Crowd()
 
 void Crowd::Init()
 {
+	festayreTexture = SDLTextureManager::GetInstance()->LoadTexture( "spClient.png" );
+
 	stateMachine = new StateMachine;
 	stateMachine->ChangeState( new Move( this, speed ) );
 }
@@ -37,9 +42,7 @@ void Crowd::Update( const float _dt, EventManager* _eventer )
 
 void Crowd::Render( Renderer* _renderer, FontManager* _fonter )
 {
-	_renderer->DrawFillRect( ( int )target.x, ( int )target.y, ( int )size.x, ( int )size.y, 0xAB, 0xAA, 0xAA, 0xBB );
-	_renderer->DrawFillRect( ( int )position.x, ( int )position.y, ( int )size.x, ( int )size.y, 0xFF, 0xFF, 0xFF, 0xFF );
-	_renderer->DrawOutlineRect( ( int )position.x, ( int )position.y, ( int )size.x, ( int )size.y, 0xFF, 0x00, 0x00, 0xFF );
+	_renderer->DrawSprite( festayreTexture, ( int )position.x, ( int )position.y - 45, 55/*( int )size.x*/, 90/*( int )size.y*/ );
 
 	if ( stateMachine )
 	{
@@ -49,7 +52,7 @@ void Crowd::Render( Renderer* _renderer, FontManager* _fonter )
 
 void Crowd::ShutDown()
 {
-
+	SDLTextureManager::GetInstance()->FreeTexture( festayreTexture );
 }
 
 void Crowd::ChangeState( State* _newState )

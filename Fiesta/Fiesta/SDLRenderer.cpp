@@ -19,7 +19,7 @@ SDLRenderer::~SDLRenderer()
 
 void SDLRenderer::Init()
 {
-	if ( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+	if ( SDL_Init( SDL_INIT_EVERYTHING ) < 0 )
 	{
 		std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
 		return;
@@ -39,9 +39,9 @@ void SDLRenderer::Init()
 			renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
 			SDL_SetRenderDrawColor( renderer, 0xFF, 0xFF, 0xFF, 0xFF );
 
-			//Initialize PNG loading
-			int imgFlags = IMG_INIT_JPG;
-			if ( !( IMG_Init( imgFlags ) & imgFlags ) )
+			int imgFlags = IMG_INIT_JPG | IMG_INIT_PNG;
+			int intResult = IMG_Init( imgFlags );
+			if ( ( intResult & imgFlags ) != imgFlags )
 			{
 				std::cout << "SDL_image could not initialize! SDL_image Error: " << IMG_GetError() << std::endl;
 				return;
@@ -112,6 +112,12 @@ void SDLRenderer::DrawText( int _x, int _y, int _r, int _g, int _b, const char* 
 void SDLRenderer::DrawBG( Texture* _texture, int /*_x*/, int /*_y*/ )
 {
 	SDL_RenderCopy( renderer, static_cast< SDLTexture* >( _texture )->texture, NULL, NULL );
+}
+
+void SDLRenderer::DrawSprite( Texture* _texture, int _x, int _y, int _width, int _height )
+{
+	SDL_Rect dest = { _x, _y, _width, _height };
+	SDL_RenderCopy( renderer, static_cast< SDLTexture* >( _texture )->texture, NULL, &dest );
 }
 
 void SDLRenderer::FreeTexture( Texture* _texture )

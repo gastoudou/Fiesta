@@ -15,16 +15,19 @@ public:
 	SDLRenderer();
 	~SDLRenderer();
 
-	virtual void Init();
-	virtual void ShutDown();
-	virtual void StartRender();
-	virtual void EndRender();
-	virtual void DrawFillRect( int _x, int _y, int _width, int _height, int _r, int _g, int _b, int _a ) const;
-	virtual void DrawOutlineRect( int _x, int _y, int _width, int _height, int _r, int _g, int _b, int _a ) const;
-	virtual void DrawText( int _x, int _y, int _r, int _g, int _b, const char* _text, Font* _font, Font::Format _format = Font::LEFT ) const;
-	virtual void DrawBG( Texture* _texture, int _x, int _y );
-	virtual void FreeTexture( Texture* _texture );
-	virtual Texture* LoadTexture( const std::string& path );
+	virtual void Init() override;
+	virtual void ShutDown() override;
+	virtual void StartRender() override;
+	virtual void EndRender() override;
+	virtual void DrawFillRect( int _x, int _y, int _width, int _height, int _r, int _g, int _b, int _a ) const override;
+	virtual void DrawOutlineRect( int _x, int _y, int _width, int _height, int _r, int _g, int _b, int _a ) const override;
+	virtual void DrawText( int _x, int _y, int _r, int _g, int _b, const char* _text, Font* _font, Font::Format _format = Font::LEFT ) const override;
+	
+	virtual void DrawBG( Texture* _texture, int _x, int _y ) override;
+	virtual void DrawSprite( Texture* _texture, int _x, int _y, int _width, int _height ) override;
+
+	virtual void FreeTexture( Texture* _texture ) override;
+	virtual Texture* LoadTexture( const std::string& path ) override;
 
 private:
 	SDL_Window* window = nullptr;

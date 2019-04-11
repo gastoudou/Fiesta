@@ -20,6 +20,7 @@ public:
 private:
 	GameState_MainMenu() = delete;
 
+	Texture* bgTexture = nullptr;
 	GameStateManager* parent = nullptr;
 };
 
@@ -43,6 +44,11 @@ private:
 	void DrawTitle( Renderer* _renderer );
 	void DrawPause( Renderer* _renderer );
 
-	Texture* bgTexture = nullptr;
+	Texture* bgFloorTexture = nullptr;
+	Texture* bgWallsTexture = nullptr;
+	Texture* pauseTexture = nullptr;
+	Texture* barTexture = nullptr;
+	Texture* shelfTexture = nullptr;
+	Texture* barmanTexture = nullptr;
 	GameStateManager* parent = nullptr;
 };

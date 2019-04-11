@@ -32,7 +32,7 @@ public:
 
 	const std::string& GetActionSelectedName( int _id )
 	{
-		return actionsSelected[ _id ]->name;
+		return actionsSelected[ _id ]->path;
 	}
 
 private:

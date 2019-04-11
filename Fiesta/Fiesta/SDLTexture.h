@@ -31,4 +31,5 @@ public:
 
 private:
 	SDLRenderer* renderer = nullptr;
+	bool m_init = false;
 };
