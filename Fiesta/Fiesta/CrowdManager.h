@@ -6,31 +6,28 @@ class Crowd;
 class State;
 class FontManager;
 
-const Vector2 seatsInitialPosition[ 3 ] =
-{
-	Vector2( 0.0f, 590.0f ),
-	Vector2( 180.0f, 590.0f ),
-	Vector2( 360.0f, 590.0f )
-};
-
 class CrowdManager
 {
 public:
+	static const Vector2 seatsInitialPosition[ 3 ];
+
 	static CrowdManager* GetInstance();
 	~CrowdManager();
 
-	void Add( const Vector2& _position, const Vector2& _size, float _speed, int _target );
-	void Update( const float _dt, EventManager* /*_eventer*/ );
-	void Render( Renderer* _renderer, FontManager* _fonter );
+	void Add( const Vector2&, float, int );
+	void Update( const float, EventManager* );
+	void Render( Renderer*, FontManager* );
+	void RenderDebug( Renderer*, FontManager* );
+	void ShutDown();
 
-	void HandleEvents( const Event& _event );
+	void HandleEvents( const Event& );
 
 	State* IAmArrived( Crowd* );
 
-	Crowd* GetCrowd( int _row );
-	void GetQueueInfo( Crowd* _dude, int& _row, int& _turn );
+	Crowd* GetCrowd( int );
+	void GetQueueInfo( Crowd*, int&, int& );
 
-	Vector2 GetTarget( Crowd* _dude );
+	Vector2 GetTarget( Crowd* );
 
 private:
 	CrowdManager();

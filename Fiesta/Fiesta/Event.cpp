@@ -3,4 +3,4 @@
 #include "stdafx.h"
 #include "Event.h"
 
-const float EventManager::FIXED_TIME_STAMP = 0.066f;
+const float EventManager::FIXED_TIME_STAMP = 0.033f;

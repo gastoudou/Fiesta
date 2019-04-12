@@ -11,8 +11,22 @@ class SDLRenderer;
 
 class SDLTexture : public Texture
 {
+	friend class SDLRenderer;
+
 public:
-	SDL_Texture* texture;
+	SDLTexture();
+	virtual ~SDLTexture();
+
+	const SDL_Texture* GetTexture() const;
+	SDL_Texture* GetTexture();
+
+	virtual int Width() const override;
+	virtual int Height() const override;
+
+private:
+	SDL_Texture* texture = nullptr;
+	int width = 0;
+	int height = 0;
 };
 
 class SDLTextureManager : public TextureManager

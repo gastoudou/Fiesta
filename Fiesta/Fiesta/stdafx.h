@@ -10,6 +10,7 @@
 #include <time.h>
 #include <sstream>
 #include <thread>
+#include <cassert>
 
 #include "Vector.h"
 #include "Render.h"

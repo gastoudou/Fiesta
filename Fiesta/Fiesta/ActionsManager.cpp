@@ -12,23 +12,30 @@ ActionsManager::ActionsManager()
 
 ActionsManager::~ActionsManager()
 {
+
+}
+
+void ActionsManager::ShutDown()
+{
 	for ( size_t i = 0; i < actions.size(); ++i )
 	{
+		actions[ i ]->ShutDown();
 		delete actions[ i ];
+		actions[ i ] = nullptr;
 	}
 }
 
-void ActionsManager::AddSelect( const Vector2& _position, const Vector2& _size, const std::string _name )
+void ActionsManager::AddSelect( const Vector2& _position, const std::string _name )
 {
-	ActionSelect* action = new ActionSelect( _position, _size, _name );
+	ActionSelect* action = new ActionSelect( _position, _name );
 	action->Init();
 	actions.push_back( action );
 	actionsSelected.push_back( action );
 }
 
-void ActionsManager::AddServe( const Vector2& _position, const Vector2& _size, const std::string _name, int _row )
+void ActionsManager::AddServe( const Vector2& _position, const std::string _name, int _row )
 {
-	ActionServe* action = new ActionServe( _position, _size, _name, _row );
+	ActionServe* action = new ActionServe( _position, _name, _row );
 	action->Init();
 	actions.push_back( action );
 }
@@ -48,6 +55,14 @@ void ActionsManager::Render( Renderer* _renderer, FontManager* _fonter )
 	{
 		actions[ i ]->Render( _renderer, _fonter );
 	}
+}
+
+void ActionsManager::RenderDebug( Renderer* _renderer, FontManager* _fonter )
+{
+	for ( size_t i = 0; i < actions.size(); ++i )
+	{
+		actions[ i ]->RenderDebug( _renderer, _fonter );
+	}
 
 	// render desk
 	for ( size_t i = 0; i < desk.size(); ++i )
@@ -64,8 +79,7 @@ void ActionsManager::HandleEvents( const Event& _event )
 		{
 			Action* current = actions[ i ];
 
-			if ( ( current->position.x < _event.Motion().x && current->position.x + current->size.x > _event.Motion().x )
-				&& ( current->position.y < _event.Motion().y && current->position.y + current->size.y > _event.Motion().y ) )
+			if( current->ClicIn( _event.Motion() ) )
 			{
 				current->Execute();
 			}
@@ -91,11 +105,21 @@ void ActionsManager::RemoveFromDesk( Action* _action )
 {
 	if ( !desk.empty() )
 	{
-		Crowd* current = CrowdManager::GetInstance()->GetCrowd( _action->row );
+		Crowd* current = CrowdManager::GetInstance()->GetCrowd( _action->GetRow() );
 		if ( current && current->IsWaiting() )
 		{
 			static_cast< ActionServe* >( _action )->Serve( current, desk );
 			desk.clear();
 		}
 	}
+}
+
+int ActionsManager::GetNbActionsSelected() const
+{
+	return ( int )actionsSelected.size();
+}
+
+const std::string& ActionsManager::GetActionSelectedName( int _id ) const
+{
+	return actionsSelected[ _id ]->GetPath();
 }

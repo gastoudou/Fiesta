@@ -111,18 +111,18 @@ void SDLRenderer::DrawText( int _x, int _y, int _r, int _g, int _b, const char* 
 
 void SDLRenderer::DrawBG( Texture* _texture, int /*_x*/, int /*_y*/ )
 {
-	SDL_RenderCopy( renderer, static_cast< SDLTexture* >( _texture )->texture, NULL, NULL );
+	SDL_RenderCopy( renderer, static_cast< SDLTexture* >( _texture )->GetTexture(), NULL, NULL );
 }
 
 void SDLRenderer::DrawSprite( Texture* _texture, int _x, int _y, int _width, int _height )
 {
 	SDL_Rect dest = { _x, _y, _width, _height };
-	SDL_RenderCopy( renderer, static_cast< SDLTexture* >( _texture )->texture, NULL, &dest );
+	SDL_RenderCopy( renderer, static_cast< SDLTexture* >( _texture )->GetTexture(), NULL, &dest );
 }
 
 void SDLRenderer::FreeTexture( Texture* _texture )
 {
-	SDL_DestroyTexture( static_cast< SDLTexture* >( _texture )->texture );
+	SDL_DestroyTexture( static_cast< SDLTexture* >( _texture )->GetTexture() );
 	delete _texture;
 	_texture = NULL;
 }
@@ -146,6 +146,12 @@ Texture* SDLRenderer::LoadTexture( const std::string& _path )
 		{
 			printf( "Unable to create texture from %s! SDL Error: %s\n", _path.c_str(), SDL_GetError() );
 		}
+
+		int ret = SDL_QueryTexture( newTexture->texture, NULL, NULL, &newTexture->width, &newTexture->height );
+		assert( ret == 0 );
+		if ( ret < 0 )
+			std::cout << "SDL could not query texture. SDL_Error: " << SDL_GetError();
+
 		//Get rid of old loaded surface
 		SDL_FreeSurface( loadedSurface );
 	}

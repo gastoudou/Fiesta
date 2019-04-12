@@ -4,7 +4,16 @@
 
 class Texture
 {
+public:
+	Texture() = default;
+	virtual ~Texture() = default;
 
+	virtual int Width() const = 0;
+	virtual int Height() const = 0;
+
+private:
+	Texture( const Texture& ) = delete;
+	Texture& operator=( const Texture& ) = delete;
 };
 
 class TextureManager

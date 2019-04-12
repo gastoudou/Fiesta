@@ -28,6 +28,7 @@ public:
 	virtual void Enter() override;
 	virtual void Update( const float _dt, EventManager* _eventer ) override;
 	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
+	virtual void RenderDebug( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void Exit() override;
 
 	void Speed( float _speed );
@@ -48,6 +49,7 @@ public:
 	virtual void Enter() override;
 	virtual void Update( const float _dt, EventManager* _eventer ) override;
 	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
+	virtual void RenderDebug( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void Exit() override;
 
 private:
@@ -66,6 +68,7 @@ public:
 	virtual void Enter() override;
 	virtual void Update( const float _dt, EventManager* _eventer ) override;
 	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
+	virtual void RenderDebug( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void Exit() override;
 
 private:
@@ -84,6 +87,7 @@ public:
 	virtual void Enter() override;
 	virtual void Update( const float _dt, EventManager* _eventer ) override;
 	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
+	virtual void RenderDebug( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void Exit() override;
 
 private:
@@ -103,6 +107,7 @@ public:
 	virtual void Enter() override;
 	virtual void Update( const float _dt, EventManager* _eventer ) override;
 	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
+	virtual void RenderDebug( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void Exit() override;
 
 private:
@@ -119,6 +124,7 @@ public:
 	virtual void Enter() override;
 	virtual void Update( const float _dt, EventManager* _eventer ) override;
 	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
+	virtual void RenderDebug( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void Exit() override;
 
 private:

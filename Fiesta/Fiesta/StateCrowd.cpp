@@ -29,10 +29,14 @@ void Move::Enter()
 
 void Move::Update( const float _dt, EventManager* /*_eventer*/ )
 {
-	Vector2 save_direction = parent->direction;
+	// @GSO: OK, have to check here... clearly gross
+//	Vector2 save_direction = parent->direction;
+	Vector2 newDirection = parent->target - parent->position;
+	newDirection.Normalize();
+
 	Vector2 save_position = parent->position;
 
-	parent->position = save_position + save_direction * speed * _dt;
+	parent->position = save_position + newDirection * speed * _dt;
 
 	Vector2 between = parent->target - parent->position;
 	if ( between.LenSquared() < 1.0f )
@@ -44,6 +48,11 @@ void Move::Update( const float _dt, EventManager* /*_eventer*/ )
 void Move::Render( Renderer* _renderer, FontManager* _fonter )
 {
 	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: MOVE", _fonter->Small() );
+}
+
+void Move::RenderDebug( Renderer* _renderer, FontManager* )
+{
+	_renderer->DrawFillRect( ( int )parent->target.x, ( int )parent->target.y, 10, 10, 255, 0, 0, 255 );
 }
 
 void Move::Exit()
@@ -78,7 +87,12 @@ void Idle::Update( const float _dt, EventManager* /*_eventer*/ )
 
 void Idle::Render( Renderer* _renderer, FontManager* _fonter )
 {
-	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: IDLE", _fonter->Small() );
+	_renderer->DrawText( ( int )parent->Position().x + 10, ( int )parent->Position().y + 10, 255, 0, 0, "State: IDLE", _fonter->Small() );
+}
+
+void Idle::RenderDebug( Renderer*, FontManager* )
+{
+
 }
 
 void Idle::Exit()
@@ -121,6 +135,12 @@ void PlaceOrder::Render( Renderer* _renderer, FontManager* _fonter )
 		_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 20 + 10 * ( int )i, 0, 0, 0, parent->GetOrder()[ i ].c_str(), _fonter->Small() );
 	}
 }
+
+void PlaceOrder::RenderDebug( Renderer* , FontManager* )
+{
+
+}
+
 void PlaceOrder::Exit()
 {
 
@@ -160,6 +180,10 @@ void WaitOrder::Render( Renderer* _renderer, FontManager* _fonter )
 	{
 		_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 20 + 10 * ( int )i, 0, 0, 0, parent->GetOrder()[ i ].c_str(), _fonter->Small() );
 	}
+}
+
+void WaitOrder::RenderDebug( Renderer* , FontManager* )
+{
 
 }
 
@@ -187,6 +211,11 @@ void WaitForYourTurn::Update( const float /*_dt*/, EventManager* /*_eventer*/ )
 void WaitForYourTurn::Render( Renderer* _renderer, FontManager* _fonter )
 {
 	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: WAIT FOR MY TURN...", _fonter->Small() );
+}
+
+void WaitForYourTurn::RenderDebug( Renderer*, FontManager* )
+{
+
 }
 
 void WaitForYourTurn::Exit()
@@ -217,6 +246,11 @@ void Upset::Update( const float _dt, EventManager* /*_eventer*/ )
 void Upset::Render( Renderer* _renderer, FontManager* _fonter )
 {
 	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: UPSET...", _fonter->Small() );
+}
+
+void Upset::RenderDebug( Renderer*, FontManager* )
+{
+
 }
 
 void Upset::Exit()

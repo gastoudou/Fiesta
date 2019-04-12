@@ -6,10 +6,14 @@
 #include "Crowd.h"
 #include "StateCrowd.h"
 
-CrowdManager::CrowdManager()
+const Vector2 CrowdManager::seatsInitialPosition[ 3 ] =
 {
+	Vector2( 135.0f, 610.0f ),
+	Vector2( 270.0f, 610.0f ),
+	Vector2( 405.0f, 610.0f )
+};
 
-}
+CrowdManager::CrowdManager() = default;
 
 CrowdManager* CrowdManager::GetInstance()
 {
@@ -17,18 +21,21 @@ CrowdManager* CrowdManager::GetInstance()
 	return &instance;
 }
 
-CrowdManager::~CrowdManager()
+CrowdManager::~CrowdManager() = default;
+
+void CrowdManager::ShutDown()
 {
 	for ( size_t i = 0; i < crowd.size(); ++i )
 	{
+		crowd[ i ]->ShutDown();
 		delete crowd[ i ];
 		crowd[ i ] = nullptr;
 	}
 }
 
-void CrowdManager::Add( const Vector2& _position, const Vector2& _size, float _speed, int _target )
+void CrowdManager::Add( const Vector2& _position, float _speed, int _target )
 {
-	Crowd* person = new Crowd( _position, _size, _speed, seatsInitialPosition[ _target ] - Vector2( 0, 55.0f * seats[ _target ].size() ) );
+	Crowd* person = new Crowd( _position, _speed, seatsInitialPosition[ _target ] );
 	person->Init();
 	crowd.push_back( person );
 	seats[ _target ].push_back( person );
@@ -39,7 +46,7 @@ void CrowdManager::Update( const float _dt, EventManager* _eventer )
 	timer -= _dt;
 	if ( timer < 0.0f )
 	{
-		Add( Vector2( 50.0f, 0.0f ), Vector2( 150.0f, 50.0f ), 2.5f, rand() % 3 );
+		Add( Vector2( 0.0f, 50.0f ), 2.5f, rand() % 3 );
 		timer = 500.0f;
 	}
 
@@ -62,6 +69,14 @@ void CrowdManager::Render( Renderer* _renderer, FontManager* _fonter )
 	for ( size_t i = 0; i < crowd.size(); ++i )
 	{
 		crowd[ i ]->Render( _renderer, _fonter );
+	}
+}
+
+void CrowdManager::RenderDebug( Renderer* _renderer, FontManager* _fonter )
+{
+	for ( size_t i = 0; i < crowd.size(); ++i )
+	{
+		crowd[ i ]->RenderDebug( _renderer, _fonter );
 	}
 }
 

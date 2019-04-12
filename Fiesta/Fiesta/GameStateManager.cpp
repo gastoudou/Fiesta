@@ -25,12 +25,16 @@ GameStateManager::GameStateManager()
 	stateMachine->ChangeState( new GameState_MainMenu( this ) );
 
 	quit = false;
-	deltaTime = EventManager::FIXED_TIME_STAMP;
+	deltaTime = EventManager::FIXED_TIME_STAMP; // @GSO: switch to engine calculated fps | maybe fixed? -> stick to 60fps
 }
 
 GameStateManager::~GameStateManager()
 {
 	renderer->ShutDown();
+
+	delete stateMachine;
+	delete eventer;
+	delete renderer;
 }
 
 void GameStateManager::Update()
@@ -39,6 +43,9 @@ void GameStateManager::Update()
 	stateMachine->Update( deltaTime, eventer );
 	renderer->StartRender();
 	stateMachine->Render( renderer, SDLFontManager::GetInstance() );
+#ifdef _DEBUG
+	stateMachine->RenderDebug( renderer, SDLFontManager::GetInstance() );
+#endif
 	renderer->EndRender();
 }
 

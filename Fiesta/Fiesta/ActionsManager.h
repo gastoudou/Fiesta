@@ -18,22 +18,17 @@ public:
 
 	void Update( const float _dt, EventManager* _eventer );
 	void Render( Renderer* _renderer, FontManager* _fonter );
+	void RenderDebug( Renderer* _renderer, FontManager* _fonter );
+	void ShutDown();
 
-	void AddSelect( const Vector2& _position, const Vector2& _size, const std::string _name );
-	void AddServe( const Vector2& _position, const Vector2& _size, const std::string _name, int _row );
+	void AddSelect( const Vector2& _position, const std::string _name );
+	void AddServe( const Vector2& _position, const std::string _name, int _row );
 
 	void AddToDesk( const std::string _name );
 	void RemoveFromDesk( Action* _action );
 
-	int GetNbActionsSelected() const
-	{
-		return ( int )actionsSelected.size();
-	}
-
-	const std::string& GetActionSelectedName( int _id )
-	{
-		return actionsSelected[ _id ]->path;
-	}
+	int GetNbActionsSelected() const;
+	const std::string& GetActionSelectedName( int _id ) const;
 
 private:
 	ActionsManager();

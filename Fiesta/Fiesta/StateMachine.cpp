@@ -32,6 +32,14 @@ void StateMachine::Render( Renderer* _renderer, FontManager* _fonter )
 	}
 }
 
+void StateMachine::RenderDebug( Renderer* _renderer, FontManager* _fonter )
+{
+	if ( currentState )
+	{
+		currentState->RenderDebug( _renderer, _fonter );
+	}
+}
+
 void StateMachine::ChangeState( State* _state )
 {
 	if ( currentState )

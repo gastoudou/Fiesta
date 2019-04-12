@@ -12,10 +12,11 @@ public:
 	GameState_MainMenu( GameStateManager* _parent );
 	virtual ~GameState_MainMenu();
 
-	virtual void Enter();
-	virtual void Update( const float _dt, EventManager* _eventer );
-	virtual void Render( Renderer* _renderer, FontManager* _fonter );
-	virtual void Exit();
+	virtual void Enter() override;
+	virtual void Update( const float _dt, EventManager* _eventer ) override;
+	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
+	virtual void RenderDebug( Renderer*, FontManager* ) override;
+	virtual void Exit() override;
 
 private:
 	GameState_MainMenu() = delete;
@@ -31,9 +32,11 @@ public:
 	explicit GameState_Gameplay( GameStateManager* _parent );
 	virtual ~GameState_Gameplay();
 
-	virtual void Enter();
-	virtual void Update( const float _dt, EventManager* _eventer );
-	virtual void Render( Renderer* _renderer, FontManager* _fonter );
+	virtual void Enter() override;
+	virtual void Update( const float _dt, EventManager* _eventer ) override;
+	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
+	virtual void RenderDebug( Renderer*, FontManager* ) override;
+
 	virtual void Exit();
 
 private:

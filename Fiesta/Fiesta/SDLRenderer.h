@@ -5,6 +5,7 @@
 #include "Render.h"
 
 #include <SDL.h>
+#include <SDL_render.h>
 
 const int SCREEN_WIDTH = 540;
 const int SCREEN_HEIGHT = 960;

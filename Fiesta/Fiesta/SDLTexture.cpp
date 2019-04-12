@@ -4,6 +4,29 @@
 #include "SDLTexture.h"
 #include "SDLRenderer.h"
 
+SDLTexture::SDLTexture() = default;
+SDLTexture::~SDLTexture() = default;
+
+const SDL_Texture* SDLTexture::GetTexture() const
+{
+	return texture;
+}
+
+SDL_Texture* SDLTexture::GetTexture()
+{
+	return texture;
+}
+
+int SDLTexture::Width() const
+{
+	return width;
+}
+
+int SDLTexture::Height() const
+{
+	return height;
+}
+
 void SDLTextureManager::Init( Renderer* _renderer )
 {
 	renderer = static_cast< SDLRenderer* >( _renderer );

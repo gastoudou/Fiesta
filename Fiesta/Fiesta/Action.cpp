@@ -8,8 +8,8 @@
 #include "ActionsManager.h"
 #include "MoneyManager.h"
 
-Action::Action( const Vector2& _position, const Vector2& _size, const std::string& _path, int _row )
-	: BaseObject( _position, _size, Vector2() )
+Action::Action( const Vector2& _position, const std::string& _path, int _row )
+	: BaseObject( _position, Vector2() )
 	, path( _path )
 	, row( _row )
 {
@@ -31,12 +31,15 @@ void Action::Update( const float /*_dt*/, EventManager* /*_eventer*/ )
 
 }
 
-void Action::Render( Renderer* _renderer, FontManager* _fonter )
+void Action::Render( Renderer* _renderer, FontManager* /*_fonter*/ )
 {
-	_renderer->DrawFillRect( ( int )position.x, ( int )position.y, ( int )size.x, ( int )size.y, 0x00, 0x00, 0x00, 0xFF );
-	_renderer->DrawOutlineRect( ( int )position.x, ( int )position.y, ( int )size.x, ( int )size.y, 0x00, 0xFF, 0x00, 0xFF );
-	_renderer->DrawText( ( int )position.x + 10, ( int )position.y + 10, 255, 0, 0, path.c_str(), _fonter->Small() );
-	_renderer->DrawSprite( sprite, ( int )position.x + 10, ( int )position.y + 10, 25, 40 );
+	_renderer->DrawSprite( sprite, ( int )position.x - sprite->Width() / 2, ( int )position.y, sprite->Width(), sprite->Height() );
+}
+
+void Action::RenderDebug( Renderer* _renderer, FontManager* _fonter )
+{
+	_renderer->DrawOutlineRect( ( int )position.x - sprite->Width() / 2, ( int )position.y, sprite->Width(), sprite->Height(), 0xFF, 0x00, 0xFF, 0xFF );
+	_renderer->DrawText( ( int )position.x - sprite->Width() / 2, ( int )position.y + sprite->Height() / 2, 255, 0, 0, path.c_str(), _fonter->Small() );
 }
 
 void Action::ShutDown()
@@ -44,10 +47,40 @@ void Action::ShutDown()
 	SDLTextureManager::GetInstance()->FreeTexture( sprite );
 }
 
+int Action::Width() const
+{
+	return sprite->Width();
+}
+
+int Action::Height() const
+{
+	return sprite->Width();
+}
+
+const std::string& Action::GetPath() const
+{
+	return path;
+}
+
+const int Action::GetRow() const
+{
+	return row;
+}
+
+bool Action::ClicIn( const Vector2& motion ) const
+{
+	return ( int )position.x - sprite->Width() / 2 <= motion.x && ( int )position.x + sprite->Width() / 2 >= motion.x &&
+		( int )position.y <= motion.y && ( int )position.y + sprite->Height() >= motion.y;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void ActionSelect::Execute()
 {
 	ActionsManager::GetInstance()->AddToDesk( path.c_str() );
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void ActionServe::Execute()
 {

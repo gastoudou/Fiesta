@@ -16,14 +16,17 @@ class Crowd : public BaseObject
 	friend class Upset;
 
 public:
-	Crowd( const Vector2& _position, const Vector2& _size, float _speed, const Vector2& _target );
+	Crowd( const Vector2& _position, float _speed, const Vector2& _target );
 
 	virtual ~Crowd();
 
 	virtual void Init() override;
 	virtual void Update( const float _dt, EventManager* _eventer ) override;
 	virtual void Render( Renderer* _renderer, FontManager* _fonter ) override;
+	virtual void RenderDebug( Renderer* _renderer, FontManager* _fonter ) override;
 	virtual void ShutDown() override;
+	virtual int Width() const override;
+	virtual int Height() const override;
 
 	void ChangeState( State* _newState );
 
