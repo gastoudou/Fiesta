@@ -16,6 +16,7 @@ public:
 		return &instance;
 	}
 
+	void Init();
 	void Update( const float _dt, EventManager* _eventer );
 	void Render( Renderer* _renderer, FontManager* _fonter );
 	void RenderDebug( Renderer* _renderer, FontManager* _fonter );
@@ -24,11 +25,13 @@ public:
 	void AddSelect( const Vector2& _position, const std::string _name );
 	void AddServe( const Vector2& _position, const std::string _name, int _row );
 
-	void AddToDesk( const std::string _name );
+	void AddToDesk( int _id );
 	void RemoveFromDesk( Action* _action );
 
 	int GetNbActionsSelected() const;
 	const std::string& GetActionSelectedName( int _id ) const;
+
+	Texture* GetOrderSprite( int _id ) const;
 
 private:
 	ActionsManager();
@@ -39,7 +42,10 @@ private:
 	std::vector< Action* > actions;
 	std::vector< Action* > actionsSelected;
 
-	std::vector< std::string > desk;
+	std::vector< int > desk;
+
+	Texture* order[ 4 ] = { nullptr };
 
 	bool canClic = true;
+	int id = 0;
 };

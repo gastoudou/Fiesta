@@ -28,32 +28,41 @@ GameState_MainMenu::~GameState_MainMenu()
 
 void GameState_MainMenu::Enter()
 {
-	bgTexture = SDLTextureManager::GetInstance()->LoadTexture( "xavi.jpg" );
+	bgTextures[ 0 ] = SDLTextureManager::GetInstance()->LoadTexture( "xavi.jpg" );
+	bgTextures[ 1 ] = SDLTextureManager::GetInstance()->LoadTexture( "maider.jpg" );
 }
 
-void GameState_MainMenu::Update( const float /*_dt*/, EventManager* _eventer )
+void GameState_MainMenu::Update( const float _dt, EventManager* _eventer )
 {
 	if ( _eventer->GetEvents().ClicLeft() )
 	{
 		parent->stateMachine->ChangeState( new GameState_Gameplay( parent ) );
 	}
+
+	timeFadeOut += _dt * 0.005f;
+	if ( timeFadeOut > 1.0f ) timeFadeOut = 0.0f;
 }
 
 void GameState_MainMenu::Render( Renderer* _renderer, FontManager* _fonter )
 {
-	_renderer->DrawBG( bgTexture, 0, 0 );
-	_renderer->DrawText( SCREEN_WIDTH / 2, 50, 255, 0, 255, "Ongietorri chez toi grangue!", _fonter->Normal(), Font::CENTER );
-	_renderer->DrawText( SCREEN_WIDTH / 2, 100, 255, 0, 255, "Clic left on the screen to start!", _fonter->Small(), Font::CENTER );
+	_renderer->DrawSprite( bgTextures[ 0 ], ( SCREEN_WIDTH - 450 ) / 3, SCREEN_HEIGHT / 2, /*bgTextures[ 0 ]->Width() / 2*/225, /*bgTextures[ 0 ]->Height() / 2*/300, timeFadeOut );
+	_renderer->DrawSprite( bgTextures[ 1 ], ( SCREEN_WIDTH - 450 ) * 2 / 3 + 225, SCREEN_HEIGHT / 2, /*bgTextures[ 1 ]->Width() / 2*/225, /*bgTextures[ 1 ]->Height() / 2*/300, 1.0f - timeFadeOut );
+
+	_renderer->DrawText( SCREEN_WIDTH / 2, 50, 255, 0, 0, "Ongietorri chez toi grangue!", _fonter->Normal(), Font::CENTER );
+	_renderer->DrawText( SCREEN_WIDTH / 2, 75, 255, 255, 255, "Clic left on the screen to start!", _fonter->Small(), Font::CENTER );
 }
 
-void GameState_MainMenu::RenderDebug( Renderer*, FontManager* )
+void GameState_MainMenu::RenderDebug( Renderer* /*_renderer*/, FontManager* /*_fonter*/ )
 {
-
+	/*std::stringstream oss;
+	oss << "FadeOut: " << timeFadeOut;
+	_renderer->DrawText( 10, 25, 255, 255, 255, oss.str().c_str(), _fonter->Normal(), Font::LEFT );*/
 }
 
 void GameState_MainMenu::Exit()
 {
-	SDLTextureManager::GetInstance()->FreeTexture( bgTexture );
+	SDLTextureManager::GetInstance()->FreeTexture( bgTextures[ 0 ] );
+	SDLTextureManager::GetInstance()->FreeTexture( bgTextures[ 1 ] );
 }
 
 
@@ -70,6 +79,8 @@ GameState_Gameplay::~GameState_Gameplay()
 
 void GameState_Gameplay::Enter()
 {
+	ActionsManager::GetInstance()->Init();
+
 	// add options
 	const int interShelv = 540 / 5;
 	ActionsManager::GetInstance()->AddSelect( Vector2( interShelv * 1, 870.0f ), "objRecipe1.png" );
@@ -102,11 +113,11 @@ void GameState_Gameplay::Update( const float _dt, EventManager* _eventer )
 	const int level = MoneyManager::GetInstance()->GetScore() / 100;
 
 	//std::thread thread1( [ _dt, _eventer ]() {
-		ActionsManager::GetInstance()->Update( _dt, _eventer );
+	ActionsManager::GetInstance()->Update( _dt, _eventer );
 	//} );
 
 	//std::thread thread2( [ _dt, _eventer, level ]() {
-		CrowdManager::GetInstance()->Update( _dt * ( 1.0f + level * 0.1f ), _eventer );
+	CrowdManager::GetInstance()->Update( _dt * ( 1.0f + level * 0.1f ), _eventer );
 	//} );
 
 	//thread1.join();
@@ -129,12 +140,12 @@ void GameState_Gameplay::Render( Renderer* _renderer, FontManager* _fonter )
 
 		std::stringstream ossScore;
 		ossScore << "Score: " << MoneyManager::GetInstance()->GetScore();
-		_renderer->DrawText( 450, 50, 0, 0, 0, ossScore.str().c_str(), SDLFontManager::GetInstance()->Small() );
+		_renderer->DrawText( 350, 10, 0, 0, 0, ossScore.str().c_str(), SDLFontManager::GetInstance()->Small() );
 
 		const int level = MoneyManager::GetInstance()->GetScore() / 100;
 		std::stringstream ossLevel;
 		ossLevel << "Level: " << level + 1;
-		_renderer->DrawText( 450, 65, 0, 0, 0, ossLevel.str().c_str(), SDLFontManager::GetInstance()->Small() );
+		_renderer->DrawText( 350, 20, 0, 0, 0, ossLevel.str().c_str(), SDLFontManager::GetInstance()->Small() );
 
 		DrawTitle( _renderer );
 	}
@@ -167,12 +178,12 @@ void GameState_Gameplay::Exit()
 
 void GameState_Gameplay::RenderStatic( Renderer* _renderer )
 {
-	_renderer->DrawBG( bgFloorTexture, 0, 0 );
-	_renderer->DrawBG( bgWallsTexture, 0, 0 );
+	_renderer->DrawBG( bgFloorTexture, 0, 0, 1.0f );
+	_renderer->DrawBG( bgWallsTexture, 0, 0, 1.0f );
 
-	_renderer->DrawSprite( barTexture, ( 540 - 464 ) / 2, 590, 464, barTexture->Height() );
-	_renderer->DrawSprite( shelfTexture, ( 540 - 480 ) / 2, 860, 480, 40 );
-	_renderer->DrawSprite( barmanTexture, 540 / 2 - 66 / 2, 590 + 98/2 + 86, 66, 86 );
+	_renderer->DrawSprite( barTexture, ( SCREEN_WIDTH - barTexture->Width() ) / 2, 590, barTexture->Width(), barTexture->Height(), 1.0f );
+	_renderer->DrawSprite( shelfTexture, ( SCREEN_WIDTH - shelfTexture->Width() ) / 2, 860, shelfTexture->Width(), shelfTexture->Height(), 1.0f );
+	_renderer->DrawSprite( barmanTexture, SCREEN_WIDTH / 2 - barmanTexture->Width() / 2, 590 + barmanTexture->Height(), barmanTexture->Width(), barmanTexture->Height(), 1.0f );
 }
 
 void GameState_Gameplay::DrawTitle( Renderer* /*_renderer*/ )
@@ -182,7 +193,7 @@ void GameState_Gameplay::DrawTitle( Renderer* /*_renderer*/ )
 
 void GameState_Gameplay::DrawPause( Renderer* _renderer )
 {
-	_renderer->DrawBG( pauseTexture, 0, 0 );
+	_renderer->DrawBG( pauseTexture, 0, 0, 0.5f );
 	_renderer->DrawFillRect( 0, SCREEN_HEIGHT / 2 - 10, SCREEN_WIDTH, 20, 0xFF, 0xFF, 0xFF, 0xFF );
 	_renderer->DrawText( SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 255, 50, 50, "- PAUSE -", SDLFontManager::GetInstance()->Normal(), Font::CENTER );
 }

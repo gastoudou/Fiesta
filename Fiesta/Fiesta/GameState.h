@@ -21,8 +21,10 @@ public:
 private:
 	GameState_MainMenu() = delete;
 
-	Texture* bgTexture = nullptr;
+	Texture* bgTextures[ 2 ] = { nullptr };
 	GameStateManager* parent = nullptr;
+
+	float timeFadeOut = 0.0f;
 };
 
 class GameState_Gameplay : public State

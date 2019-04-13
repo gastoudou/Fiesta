@@ -63,7 +63,7 @@ void SDLRenderer::ShutDown()
 
 void SDLRenderer::StartRender()
 {
-	SDL_SetRenderDrawColor( renderer, 0xBB, 0xBB, 0xBB, 0xFF );
+	SDL_SetRenderDrawColor( renderer, 0x00, 0x00, 0x00, 0xFF );
 	SDL_RenderClear( renderer );
 }
 
@@ -109,15 +109,35 @@ void SDLRenderer::DrawText( int _x, int _y, int _r, int _g, int _b, const char* 
 	SDL_FreeSurface( surface );
 }
 
-void SDLRenderer::DrawBG( Texture* _texture, int /*_x*/, int /*_y*/ )
+void SDLRenderer::DrawBG( Texture* _texture, int /*_x*/, int /*_y*/, float _alpha )
 {
-	SDL_RenderCopy( renderer, static_cast< SDLTexture* >( _texture )->GetTexture(), NULL, NULL );
+	int ret = SDL_SetTextureAlphaMod( static_cast< SDLTexture* >( _texture )->GetTexture(), static_cast< Uint8 >( floorf( 255.0f * _alpha ) ) );
+	if ( ret != 0 )
+	{
+		std::cout << "SDL_SetTextureAlphaMod error: " << SDL_GetError() << std::endl;
+	}
+
+	ret = SDL_RenderCopy( renderer, static_cast< SDLTexture* >( _texture )->GetTexture(), NULL, NULL );
+	if ( ret != 0 )
+	{
+		std::cout << "SDL_SetTextureAlphaMod error: " << SDL_GetError() << std::endl;
+	}
 }
 
-void SDLRenderer::DrawSprite( Texture* _texture, int _x, int _y, int _width, int _height )
+void SDLRenderer::DrawSprite( Texture* _texture, int _x, int _y, int _width, int _height, float _alpha )
 {
+	int ret = SDL_SetTextureAlphaMod( static_cast< SDLTexture* >( _texture )->GetTexture(), static_cast< Uint8 >( floorf( 255.0f * _alpha ) ) );
+	if ( ret != 0 )
+	{
+		std::cout << "SDL_SetTextureAlphaMod error: " << SDL_GetError() << std::endl;
+	}
+
 	SDL_Rect dest = { _x, _y, _width, _height };
-	SDL_RenderCopy( renderer, static_cast< SDLTexture* >( _texture )->GetTexture(), NULL, &dest );
+	ret = SDL_RenderCopy( renderer, static_cast< SDLTexture* >( _texture )->GetTexture(), NULL, &dest );
+	if ( ret != 0 )
+	{
+		std::cout << "SDL_SetTextureAlphaMod error: " << SDL_GetError() << std::endl;
+	}
 }
 
 void SDLRenderer::FreeTexture( Texture* _texture )

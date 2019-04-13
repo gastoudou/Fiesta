@@ -24,8 +24,8 @@ public:
 	virtual void DrawOutlineRect( int _x, int _y, int _width, int _height, int _r, int _g, int _b, int _a ) const override;
 	virtual void DrawText( int _x, int _y, int _r, int _g, int _b, const char* _text, Font* _font, Font::Format _format = Font::LEFT ) const override;
 	
-	virtual void DrawBG( Texture* _texture, int _x, int _y ) override;
-	virtual void DrawSprite( Texture* _texture, int _x, int _y, int _width, int _height ) override;
+	virtual void DrawBG( Texture* _texture, int _x, int _y, float _alpha ) override;
+	virtual void DrawSprite( Texture* _texture, int _x, int _y, int _width, int _height, float _alpha ) override;
 
 	virtual void FreeTexture( Texture* _texture ) override;
 	virtual Texture* LoadTexture( const std::string& path ) override;

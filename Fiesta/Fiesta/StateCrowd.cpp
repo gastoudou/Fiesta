@@ -22,37 +22,37 @@ Move::Move( Crowd* _parent, float _speed )
 
 void Move::Enter()
 {
-	Vector2 newDirection = parent->target - parent->position;
-	newDirection.Normalize();
-	parent->direction = newDirection;
 }
 
 void Move::Update( const float _dt, EventManager* /*_eventer*/ )
 {
-	// @GSO: OK, have to check here... clearly gross
-//	Vector2 save_direction = parent->direction;
-	Vector2 newDirection = parent->target - parent->position;
-	newDirection.Normalize();
+	Vector2 direction = parent->target - parent->position;
+	direction.Normalize();
+	parent->direction = direction;
 
-	Vector2 save_position = parent->position;
-
-	parent->position = save_position + newDirection * speed * _dt;
+	Vector2 newPosition = parent->position + direction * speed * _dt;
+	parent->position = newPosition;
 
 	Vector2 between = parent->target - parent->position;
-	if ( between.LenSquared() < 1.0f )
+	if ( between.LenSquared() < 5.0f )
 	{
 		parent->ChangeState( CrowdManager::GetInstance()->IAmArrived( parent ) );
 	}
 }
 
-void Move::Render( Renderer* _renderer, FontManager* _fonter )
+void Move::Render( Renderer*, FontManager* )
 {
-	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: MOVE", _fonter->Small() );
+
 }
 
-void Move::RenderDebug( Renderer* _renderer, FontManager* )
+void Move::RenderDebug( Renderer* _renderer, FontManager* _fonter )
 {
-	_renderer->DrawFillRect( ( int )parent->target.x, ( int )parent->target.y, 10, 10, 255, 0, 0, 255 );
+	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: MOVE", _fonter->Small() );
+	_renderer->DrawFillRect( ( int )parent->target.x, ( int )parent->target.y, 5, 5, 255, 0, 0, 255 );
+	if ( parent && parent->festayreTexture )
+	{
+		_renderer->DrawOutlineRect( ( int )parent->position.x, ( int )parent->position.y, parent->festayreTexture->Width(), parent->festayreTexture->Height(), 255, 0, 0, 255 );
+	}
 }
 
 void Move::Exit()
@@ -85,14 +85,13 @@ void Idle::Update( const float _dt, EventManager* /*_eventer*/ )
 	}
 }
 
-void Idle::Render( Renderer* _renderer, FontManager* _fonter )
+void Idle::Render( Renderer*, FontManager* )
 {
-	_renderer->DrawText( ( int )parent->Position().x + 10, ( int )parent->Position().y + 10, 255, 0, 0, "State: IDLE", _fonter->Small() );
 }
 
-void Idle::RenderDebug( Renderer*, FontManager* )
+void Idle::RenderDebug( Renderer* _renderer, FontManager* _fonter )
 {
-
+	_renderer->DrawText( ( int )parent->Position().x + 10, ( int )parent->Position().y + 10, 255, 0, 0, "State: IDLE", _fonter->Small() );
 }
 
 void Idle::Exit()
@@ -113,7 +112,7 @@ void PlaceOrder::Enter()
 	int orderSize = 1 + rand() % 2;
 	for ( int i = 0; i < orderSize; ++i )
 	{
-		parent->order.push_back( ActionsManager::GetInstance()->GetActionSelectedName( rand() % ActionsManager::GetInstance()->GetNbActionsSelected() ) );
+		parent->order.push_back( rand() % ActionsManager::GetInstance()->GetNbActionsSelected() );
 	}
 }
 
@@ -126,19 +125,27 @@ void PlaceOrder::Update( const float _dt, EventManager* /*_eventer*/ )
 	}
 }
 
-void PlaceOrder::Render( Renderer* _renderer, FontManager* _fonter )
+void PlaceOrder::Render( Renderer* _renderer, FontManager* )
 {
-	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: PLACE ORDER", _fonter->Small() );
-
-	for( size_t i = 0; i < parent->GetOrder().size(); ++i )
+	for ( size_t i = 0; i < parent->GetOrder().size(); ++i )
 	{
-		_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 20 + 10 * ( int )i, 0, 0, 0, parent->GetOrder()[ i ].c_str(), _fonter->Small() );
+		Texture* sprite = ActionsManager::GetInstance()->GetOrderSprite( parent->GetOrder()[ i ] );
+		int w = sprite->Width() / 2;
+		int h = sprite->Height() / 2;
+		_renderer->DrawSprite( sprite, ( int )parent->position.x + w * ( int )i, ( int )parent->position.y, w, h, 1.0f );
 	}
 }
 
-void PlaceOrder::RenderDebug( Renderer* , FontManager* )
+void PlaceOrder::RenderDebug( Renderer* _renderer, FontManager* _fonter )
 {
+	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: PLACE ORDER", _fonter->Small() );
 
+	for ( size_t i = 0; i < parent->GetOrder().size(); ++i )
+	{
+		std::stringstream oss;
+		oss << "order" << parent->GetOrder()[ i ];
+		_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 20 + 10 * ( int )i, 0, 0, 0, oss.str().c_str(), _fonter->Small() );
+	}
 }
 
 void PlaceOrder::Exit()
@@ -164,6 +171,7 @@ void WaitOrder::Update( const float _dt, EventManager* /*_eventer*/ )
 	if ( timer > limitToWait )
 	{
 		parent->ChangeState( new Upset( parent ) );
+		return;
 	}
 
 	if ( parent->IsServed() )
@@ -172,19 +180,27 @@ void WaitOrder::Update( const float _dt, EventManager* /*_eventer*/ )
 	}
 }
 
-void WaitOrder::Render( Renderer* _renderer, FontManager* _fonter )
+void WaitOrder::Render( Renderer* _renderer, FontManager* )
+{
+	for ( size_t i = 0; i < parent->GetOrder().size(); ++i )
+	{
+		Texture* sprite = ActionsManager::GetInstance()->GetOrderSprite( parent->GetOrder()[ i ] );
+		int w = sprite->Width() / 2;
+		int h = sprite->Height() / 2;
+		_renderer->DrawSprite( sprite, ( int )parent->position.x + w * ( int )i, ( int )parent->position.y, w, h, 1.0f );
+	}
+}
+
+void WaitOrder::RenderDebug( Renderer* _renderer, FontManager* _fonter )
 {
 	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: WAIT ORDER", _fonter->Small() );
 
 	for ( size_t i = 0; i < parent->GetOrder().size(); ++i )
 	{
-		_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 20 + 10 * ( int )i, 0, 0, 0, parent->GetOrder()[ i ].c_str(), _fonter->Small() );
+		std::stringstream oss;
+		oss << "order" << parent->GetOrder()[ i ];
+		_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 20 + 10 * ( int )i, 0, 0, 0, oss.str().c_str(), _fonter->Small() );
 	}
-}
-
-void WaitOrder::RenderDebug( Renderer* , FontManager* )
-{
-
 }
 
 void WaitOrder::Exit()
@@ -208,14 +224,13 @@ void WaitForYourTurn::Update( const float /*_dt*/, EventManager* /*_eventer*/ )
 	parent->RefreshTarget();
 }
 
-void WaitForYourTurn::Render( Renderer* _renderer, FontManager* _fonter )
+void WaitForYourTurn::Render( Renderer*, FontManager* )
 {
-	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: WAIT FOR MY TURN...", _fonter->Small() );
 }
 
-void WaitForYourTurn::RenderDebug( Renderer*, FontManager* )
+void WaitForYourTurn::RenderDebug( Renderer* _renderer, FontManager* _fonter )
 {
-
+	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: WAIT FOR MY TURN...", _fonter->Small() );
 }
 
 void WaitForYourTurn::Exit()
@@ -243,14 +258,14 @@ void Upset::Update( const float _dt, EventManager* /*_eventer*/ )
 		parent->ChangeState( new Idle( parent ) );
 }
 
-void Upset::Render( Renderer* _renderer, FontManager* _fonter )
+void Upset::Render( Renderer*, FontManager* )
 {
-	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: UPSET...", _fonter->Small() );
+
 }
 
-void Upset::RenderDebug( Renderer*, FontManager* )
+void Upset::RenderDebug( Renderer* _renderer, FontManager* _fonter )
 {
-
+	_renderer->DrawText( ( int )parent->position.x + 10, ( int )parent->position.y + 10, 255, 0, 0, "State: UPSET...", _fonter->Small() );
 }
 
 void Upset::Exit()

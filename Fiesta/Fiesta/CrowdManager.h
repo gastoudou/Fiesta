@@ -24,7 +24,7 @@ public:
 
 	State* IAmArrived( Crowd* );
 
-	Crowd* GetCrowd( int );
+	Crowd* GetFirstCrowd( int ) const;
 	void GetQueueInfo( Crowd*, int&, int& );
 
 	Vector2 GetTarget( Crowd* );
@@ -33,6 +33,8 @@ private:
 	CrowdManager();
 	CrowdManager( const CrowdManager& ) = delete;
 	CrowdManager& operator=( const CrowdManager& ) = delete;
+
+	void ClearSeats( Crowd* _dude );
 
 	std::vector< Crowd* >		crowd;
 	std::vector< Crowd* >		seats[ 3 ];

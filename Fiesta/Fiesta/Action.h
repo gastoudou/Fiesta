@@ -55,10 +55,10 @@ public:
 	ActionServe( const Vector2& _position, const std::string& _path, int _row )
 		: Action( _position, _path, _row )
 	{
-		//LoadSoundEffect( "resources/bell.wav" );
+		LoadSoundEffect( "resources/bell.wav" );
 	}
 
 	virtual void Execute() override;
 
-	void Serve( Crowd* _dude, const std::vector< std::string >& _desk );
+	void Serve( Crowd* _dude, const std::vector< int >& _desk );
 };

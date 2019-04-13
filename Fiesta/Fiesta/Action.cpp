@@ -34,7 +34,7 @@ void Action::Update( const float /*_dt*/, EventManager* /*_eventer*/ )
 
 void Action::Render( Renderer* _renderer, FontManager* /*_fonter*/ )
 {
-	_renderer->DrawSprite( sprite, ( int )position.x - sprite->Width() / 2, ( int )position.y, sprite->Width(), sprite->Height() );
+	_renderer->DrawSprite( sprite, ( int )position.x - sprite->Width() / 2, ( int )position.y, sprite->Width(), sprite->Height(), 1.0f );
 }
 
 void Action::RenderDebug( Renderer* _renderer, FontManager* _fonter )
@@ -84,7 +84,7 @@ void Action::LoadSoundEffect( const std::string& _path )
 void ActionSelect::Execute()
 {
 	SoundManager::GetInstance()->PlaySound( soundID );
-	ActionsManager::GetInstance()->AddToDesk( path.c_str() );
+	ActionsManager::GetInstance()->AddToDesk( GetRow() );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,7 +95,7 @@ void ActionServe::Execute()
 	ActionsManager::GetInstance()->RemoveFromDesk( this );
 }
 
-void ActionServe::Serve( Crowd* _dude, const std::vector< std::string >& _desk )
+void ActionServe::Serve( Crowd* _dude, const std::vector< int >& _desk )
 {
 	int money = 5 * ( int )_dude->GetOrder().size();
 

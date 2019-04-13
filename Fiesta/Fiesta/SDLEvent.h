@@ -20,7 +20,7 @@ public:
 	virtual Vector2 Motion() const override;
 
 private:
-	SDL_Event events;
+	SDL_Event events = {};
 };
 
 class SDLEventManager : public EventManager

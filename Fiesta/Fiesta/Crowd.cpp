@@ -10,9 +10,8 @@
 #include "StateMachine.h"
 #include "StateCrowd.h"
 
-Crowd::Crowd( const Vector2& _position, float _speed, const Vector2& _target )
-	: BaseObject( _position, Vector2( _target - _position ) )
-	, target( _target )
+Crowd::Crowd( const Vector2& _position, float _speed )
+	: BaseObject( _position, Vector2( 0.0f, 1.0f ) )
 	, speed( _speed )
 {
 
@@ -27,6 +26,7 @@ Crowd::~Crowd()
 void Crowd::Init()
 {
 	festayreTexture = SDLTextureManager::GetInstance()->LoadTexture( "spClient.png" );
+	target = CrowdManager::GetInstance()->GetTarget( this ) - Vector2( ( float )festayreTexture->Width(), ( float )festayreTexture->Height() );
 
 	stateMachine = new StateMachine;
 	stateMachine->ChangeState( new Move( this, speed ) );
@@ -36,14 +36,13 @@ void Crowd::Update( const float _dt, EventManager* _eventer )
 {
 	if ( stateMachine )
 	{
-		target = CrowdManager::GetInstance()->GetTarget( this ) - Vector2( ( float )festayreTexture->Width(), ( float )festayreTexture->Height() * 2 );
 		stateMachine->Update( _dt, _eventer );
 	}
 }
 
 void Crowd::Render( Renderer* _renderer, FontManager* _fonter )
 {
-	_renderer->DrawSprite( festayreTexture, ( int )position.x + festayreTexture->Width() / 2, ( int )position.y + festayreTexture->Height() / 2, festayreTexture->Width(), festayreTexture->Height() );
+	_renderer->DrawSprite( festayreTexture, ( int )position.x, ( int )position.y, festayreTexture->Width(), festayreTexture->Height(), 1.0f );
 
 	if ( stateMachine )
 	{
@@ -53,6 +52,7 @@ void Crowd::Render( Renderer* _renderer, FontManager* _fonter )
 
 void Crowd::RenderDebug( Renderer* _renderer, FontManager* _fonter )
 {
+
 	if ( stateMachine )
 	{
 		stateMachine->RenderDebug( _renderer, _fonter );
@@ -89,7 +89,7 @@ void Crowd::SetRemove()
 	toRemove = true;
 }
 
-const std::vector< std::string >& Crowd::GetOrder() const
+const std::vector< int >& Crowd::GetOrder() const
 {
 	return order;
 }

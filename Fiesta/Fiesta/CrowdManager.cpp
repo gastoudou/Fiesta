@@ -35,38 +35,47 @@ void CrowdManager::ShutDown()
 
 void CrowdManager::Add( const Vector2& _position, float _speed, int _target )
 {
-	Crowd* person = new Crowd( _position, _speed, seatsInitialPosition[ _target ] );
-	person->Init();
-	crowd.push_back( person );
+	Crowd* person = new Crowd( _position, _speed );
 	seats[ _target ].push_back( person );
+	crowd.push_back( person );
+	person->Init();
 }
 
 void CrowdManager::Update( const float _dt, EventManager* _eventer )
 {
 	timer -= _dt;
-	if ( timer < 0.0f )
+	if ( timer < 0.0f && crowd.size() < 30 ) // max 30 dudes
 	{
-		Add( Vector2( 0.0f, 50.0f ), 2.5f, rand() % 3 );
+		Add( Vector2( 0.0f, 20.0f ), 2.5f, rand() % 3 );
 		timer = 500.0f;
 	}
+
+	ClearSeats( nullptr );
 
 	auto it = crowd.begin();
 	for ( ; it != crowd.end(); )
 	{
-		( *it )->Update( _dt, _eventer );
-		if ( ( *it )->ToRemove() )
+		Crowd* current = *it;
+
+		if ( current->ToRemove() )
 		{
-			delete *it;
+			ClearSeats( current );
+			current->ShutDown();
+			delete current;
+			current = nullptr;
 			it = crowd.erase( it );
-			continue;
 		}
-		++it;
+		else
+		{
+			current->Update( _dt, _eventer );
+			++it;
+		}
 	}
 }
 
 void CrowdManager::Render( Renderer* _renderer, FontManager* _fonter )
 {
-	for ( size_t i = 0; i < crowd.size(); ++i )
+	for ( int i = ( int )crowd.size() - 1; i >= 0 ; --i )
 	{
 		crowd[ i ]->Render( _renderer, _fonter );
 	}
@@ -100,13 +109,13 @@ State* CrowdManager::IAmArrived( Crowd* _dude )
 	return new WaitForYourTurn( _dude );
 }
 
-Crowd* CrowdManager::GetCrowd( int _row )
+Crowd* CrowdManager::GetFirstCrowd( int _row ) const
 {
-	if ( seats[ _row ].empty() ) return nullptr;
-
-	Crowd* current = *seats[ _row ].begin();
-	seats[ _row ].erase( seats[ _row ].begin() );
-	return current;
+	if ( seats[ _row ].empty() )
+	{
+		return nullptr;
+	}
+	return *seats[ _row ].begin();
 }
 
 Vector2 CrowdManager::GetTarget( Crowd* _dude )
@@ -127,7 +136,22 @@ void CrowdManager::GetQueueInfo( Crowd* _dude, int& row, int& turn )
 			{
 				row = ( int )j;
 				turn = ( int )i;
-				break;
+				return;
+			}
+		}
+	}
+}
+
+void CrowdManager::ClearSeats( Crowd* _dude )
+{
+	for ( size_t j = 0; j < 3; ++j )
+	{
+		for ( size_t i = 0; i < seats[ j ].size(); ++i )
+		{
+			if ( seats[ j ][ i ] == _dude )
+			{
+				seats[ j ].erase( seats[ j ].begin() + i );
+				return;
 			}
 		}
 	}

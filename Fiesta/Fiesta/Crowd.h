@@ -16,7 +16,7 @@ class Crowd : public BaseObject
 	friend class Upset;
 
 public:
-	Crowd( const Vector2& _position, float _speed, const Vector2& _target );
+	Crowd( const Vector2& _position, float _speed );
 
 	virtual ~Crowd();
 
@@ -37,7 +37,7 @@ public:
 
 	void SetRemove();
 
-	const std::vector< std::string >& GetOrder() const;
+	const std::vector< int >& GetOrder() const;
 
 private:
 	Crowd() = delete;
@@ -53,5 +53,5 @@ private:
 	bool				toRemove = false;
 	bool				isWaiting = false;
 
-	std::vector< std::string > order;
+	std::vector< int > order;
 };
