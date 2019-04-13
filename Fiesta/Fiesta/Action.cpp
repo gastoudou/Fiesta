@@ -7,6 +7,7 @@
 
 #include "ActionsManager.h"
 #include "MoneyManager.h"
+#include "SoundManager.h"
 
 Action::Action( const Vector2& _position, const std::string& _path, int _row )
 	: BaseObject( _position, Vector2() )
@@ -73,10 +74,16 @@ bool Action::ClicIn( const Vector2& motion ) const
 		( int )position.y <= motion.y && ( int )position.y + sprite->Height() >= motion.y;
 }
 
+void Action::LoadSoundEffect( const std::string& _path )
+{
+	soundID = SoundManager::GetInstance()->LoadSound( _path.c_str() );
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void ActionSelect::Execute()
 {
+	SoundManager::GetInstance()->PlaySound( soundID );
 	ActionsManager::GetInstance()->AddToDesk( path.c_str() );
 }
 
@@ -84,6 +91,7 @@ void ActionSelect::Execute()
 
 void ActionServe::Execute()
 {
+	SoundManager::GetInstance()->PlaySound( soundID );
 	ActionsManager::GetInstance()->RemoveFromDesk( this );
 }
 

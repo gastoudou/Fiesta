@@ -110,8 +110,8 @@ void PlaceOrder::Enter()
 {
 	timer = 50.0f;
 
-	size_t orderSize = 1 + rand() % 2;
-	for ( size_t i = 0; i < orderSize; ++i )
+	int orderSize = 1 + rand() % 2;
+	for ( int i = 0; i < orderSize; ++i )
 	{
 		parent->order.push_back( ActionsManager::GetInstance()->GetActionSelectedName( rand() % ActionsManager::GetInstance()->GetNbActionsSelected() ) );
 	}

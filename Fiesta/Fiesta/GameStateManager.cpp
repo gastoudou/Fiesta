@@ -7,6 +7,7 @@
 #include "SDLRenderer.h"
 #include "SDLEvent.h"
 #include "SDLTexture.h"
+#include "SoundManager.h"
 
 #include "StateMachine.h"
 #include "GameState.h"
@@ -20,6 +21,7 @@ GameStateManager::GameStateManager()
 	renderer->Init();
 
 	SDLTextureManager::GetInstance()->Init( renderer );
+	SoundManager::GetInstance()->Init();
 
 	stateMachine = new StateMachine;
 	stateMachine->ChangeState( new GameState_MainMenu( this ) );
@@ -30,6 +32,7 @@ GameStateManager::GameStateManager()
 
 GameStateManager::~GameStateManager()
 {
+	SoundManager::GetInstance()->ShutDown();
 	renderer->ShutDown();
 
 	delete stateMachine;

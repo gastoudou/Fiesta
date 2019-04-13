@@ -3,4 +3,8 @@
 #include "stdafx.h"
 #include "Event.h"
 
-const float EventManager::FIXED_TIME_STAMP = 0.033f;
+#ifdef _DEBUG
+const float EventManager::FIXED_TIME_STAMP = 0.33f;
+#else
+const float EventManager::FIXED_TIME_STAMP = 0.033f; 
+#endif // _DEBUG

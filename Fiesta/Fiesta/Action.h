@@ -29,9 +29,12 @@ public:
 	bool ClicIn( const Vector2& ) const;
 
 protected:
+	void LoadSoundEffect( const std::string& _path );
+
 	Texture* sprite = nullptr;
 	std::string path;
 	int row = -1;
+	int soundID = -1;
 };
 
 class ActionSelect : public Action
@@ -40,7 +43,7 @@ public:
 	ActionSelect( const Vector2& _position, const std::string& _path, int _row = 0 )
 		: Action( _position, _path, _row )
 	{
-
+		LoadSoundEffect( "resources/icecubes.wav" );
 	}
 
 	virtual void Execute() override;
@@ -52,7 +55,7 @@ public:
 	ActionServe( const Vector2& _position, const std::string& _path, int _row )
 		: Action( _position, _path, _row )
 	{
-
+		//LoadSoundEffect( "resources/bell.wav" );
 	}
 
 	virtual void Execute() override;
